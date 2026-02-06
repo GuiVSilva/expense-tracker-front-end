@@ -26,8 +26,7 @@ export const SignUp = () => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    terms: false
+    confirmPassword: ''
   })
 
   const passwordRequirements = [
@@ -40,7 +39,7 @@ export const SignUp = () => {
   const handleSubmit = async e => {
     e.preventDefault()
     setIsLoading(true)
-
+    console.log("formData", formData)
     await new Promise(resolve => setTimeout(resolve, 1500))
 
     navigate('/dashboard')
@@ -205,7 +204,6 @@ export const SignUp = () => {
               className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
               disabled={
                 isLoading ||
-                !formData.terms ||
                 formData.password !== formData.confirmPassword
               }
             >
