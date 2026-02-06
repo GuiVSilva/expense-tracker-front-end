@@ -1,22 +1,31 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Login } from './pages/auth/login'
-import { SignUp } from './pages/auth/sign-up'
-import { Home } from './pages/home'
-import { Dashboard } from './pages/dashboard'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Login } from "./pages/auth/login";
+import { SignUp } from "./pages/auth/sign-up";
+import { Home } from "./pages/home";
+import { Dashboard } from "./pages/dashboard";
+import { ProtectedRoute } from "./components/auth/protected-route";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const App = () => {
   return (
-    <div>
+    <AuthProvider>
       <Router>
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/sign-up" element={<SignUp />}></Route>
-          <Route path="/dashboard" element={<Dashboard />}></Route>
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          ></Route>
         </Routes>
       </Router>
-    </div>
-  )
-}
+    </AuthProvider>
+  );
+};
 
-export default App
+export default App;
