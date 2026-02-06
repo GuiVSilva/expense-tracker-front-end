@@ -12,7 +12,9 @@ import {
   Check,
   User,
   Mail,
-  Lock
+  Lock,
+  TrendingUp,
+  Zap
 } from 'lucide-react'
 
 export const SignUp = () => {
@@ -39,11 +41,9 @@ export const SignUp = () => {
     e.preventDefault()
     setIsLoading(true)
 
-    // Simulando cadastro
     await new Promise(resolve => setTimeout(resolve, 1500))
 
-    // Redireciona para o dashboard
-    navigate('/')
+    navigate('/dashboard')
   }
 
   return (
@@ -56,8 +56,8 @@ export const SignUp = () => {
             to="/"
             className="flex items-center gap-3 mb-8 lg:hidden justify-center"
           >
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
-              <Wallet className="w-6 h-6 text-primary-foreground" />
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <Wallet className="w-5 h-5 text-primary" />
             </div>
             <span className="text-xl font-bold text-foreground">
               ExpenseTracker
@@ -144,14 +144,12 @@ export const SignUp = () => {
                   {passwordRequirements.map((req, index) => (
                     <div
                       key={index}
-                      className={`flex items-center gap-2 text-xs ${
-                        req.met ? 'text-primary' : 'text-muted-foreground'
-                      }`}
+                      className={`flex items-center gap-2 text-xs ${req.met ? 'text-primary' : 'text-muted-foreground'
+                        }`}
                     >
                       <div
-                        className={`w-4 h-4 rounded-full flex items-center justify-center ${
-                          req.met ? 'bg-primary' : 'bg-muted'
-                        }`}
+                        className={`w-4 h-4 rounded-full flex items-center justify-center ${req.met ? 'bg-primary' : 'bg-muted'
+                          }`}
                       >
                         {req.met && (
                           <Check className="w-3 h-3 text-primary-foreground" />
@@ -238,12 +236,12 @@ export const SignUp = () => {
       </div>
 
       {/* Lado direito - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-linear-to-bl from-card via-background to-card">
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-linear-to-br from-card via-background to-card">
         {/* Elementos decorativos */}
         <div className="absolute inset-0">
-          <div className="absolute top-32 right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-32 left-20 w-96 h-96 bg-chart-4/10 rounded-full blur-3xl animate-pulse delay-1000" />
-          <div className="absolute top-1/2 right-1/3 -translate-y-1/2 w-64 h-64 bg-destructive/5 rounded-full blur-3xl animate-pulse delay-500" />
+          <div className="absolute top-20 left-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-chart-4/10 rounded-full blur-3xl animate-pulse delay-1000" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-accent/10 rounded-full blur-3xl animate-pulse delay-500" />
         </div>
 
         {/* Grid pattern */}
@@ -251,7 +249,7 @@ export const SignUp = () => {
           className="absolute inset-0 opacity-5"
           style={{
             backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+                      linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
             backgroundSize: '50px 50px'
           }}
         />
@@ -260,8 +258,8 @@ export const SignUp = () => {
         <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 mb-12">
-            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
-              <Wallet className="w-7 h-7 text-primary-foreground" />
+            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+              <Wallet className="w-7 h-7 text-primary" />
             </div>
             <span className="text-2xl font-bold text-foreground">
               ExpenseTracker
@@ -269,48 +267,54 @@ export const SignUp = () => {
           </Link>
 
           <h1 className="text-4xl xl:text-5xl font-bold text-foreground mb-6 leading-tight text-balance">
-            Junte-se a milhares de{' '}
-            <span className="text-primary">usuários</span>
+            Organize suas{' '}
+            <span className="text-primary">finanças</span>
           </h1>
 
           <p className="text-lg text-muted-foreground mb-12 max-w-md text-pretty">
-            Crie sua conta em segundos e comece a ter controle total das suas
-            finanças pessoais.
+            Crie sua conta e tenha controle total sobre seu dinheiro.
+            Simples, rápido e eficiente.
           </p>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-1">50k+</div>
-              <div className="text-sm text-muted-foreground">
-                Usuários ativos
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-accent mb-1">R$2M+</div>
-              <div className="text-sm text-muted-foreground">Gerenciados</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-chart-4 mb-1">4.9</div>
-              <div className="text-sm text-muted-foreground">Avaliação</div>
-            </div>
-          </div>
-
-          {/* Testimonial */}
-          <div className="mt-12 p-6 bg-card/50 backdrop-blur-sm rounded-2xl border border-border">
-            <p className="text-foreground italic mb-4">
-              &ldquo;O ExpenseTracker mudou completamente a forma como eu
-              gerencio meu dinheiro. Super intuitivo e fácil de usar!&rdquo;
-            </p>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                <User className="w-5 h-5 text-primary" />
+          {/* Features */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <div className="font-semibold text-foreground">Maria Silva</div>
-                <div className="text-sm text-muted-foreground">
-                  Empreendedora
-                </div>
+                <h3 className="font-semibold text-foreground">
+                  Acompanhamento em tempo real
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Veja seus gastos atualizados a cada transação
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-lg bg-chart-4/10 flex items-center justify-center">
+                <Lock className="w-6 h-6 text-chart-4" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">Segurança garantida</h3>
+                <p className="text-sm text-muted-foreground">
+                  Dados protegidos com criptografia de ponta
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center">
+                <Zap className="w-6 h-6 text-accent" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">
+                  Configuração rápida
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Comece a usar em menos de 1 minuto
+                </p>
               </div>
             </div>
           </div>

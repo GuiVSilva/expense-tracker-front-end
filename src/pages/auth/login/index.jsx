@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   Eye,
   EyeOff,
@@ -33,7 +32,7 @@ export const Login = () => {
     await new Promise(resolve => setTimeout(resolve, 1500))
 
     // Redireciona para o dashboard
-    navigate('/')
+    navigate('/dashboard')
   }
 
   return (
@@ -61,8 +60,8 @@ export const Login = () => {
         <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 mb-12">
-            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
-              <Wallet className="w-7 h-7 text-primary-foreground" />
+            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+              <Wallet className="w-7 h-7 text-primary" />
             </div>
             <span className="text-2xl font-bold text-foreground">
               ExpenseTracker
@@ -201,19 +200,7 @@ export const Login = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="remember"
-                checked={formData.remember}
-                onCheckedChange={checked =>
-                  setFormData({ ...formData, remember: checked })
-                }
-              />
-              <Label htmlFor="remember" className="text-sm cursor-pointer">
-                Lembrar de mim
-              </Label>
-            </div>
-
+           
             <Button
               type="submit"
               className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"

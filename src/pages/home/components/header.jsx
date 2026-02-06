@@ -1,6 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { Menu, Wallet, X } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router'
+
 
 const navLinks = [
   { name: 'Funcionalidades', href: '#features' },
@@ -9,6 +11,7 @@ const navLinks = [
 ]
 
 export function Header() {
+  const navigate = useNavigate()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -23,11 +26,10 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-background/80 backdrop-blur-lg border-b border-border shadow-lg shadow-background/5'
-          : 'bg-transparent'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+        ? 'bg-background/80 backdrop-blur-lg border-b border-border shadow-lg shadow-background/5'
+        : 'bg-transparent'
+        }`}
     >
       <div className="container mx-auto px-4">
         <nav className="flex items-center justify-between h-16 lg:h-20">
@@ -42,7 +44,7 @@ export function Header() {
           </a>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* <div className="hidden md:flex items-center gap-8">
             {navLinks.map(link => (
               <a
                 key={link.name}
@@ -52,18 +54,18 @@ export function Header() {
                 {link.name}
               </a>
             ))}
-          </div>
+          </div> */}
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
               Entrar
             </Button>
-            <Button size="sm">Começar Grátis</Button>
+            <Button size="sm" onClick={() => navigate('/sign-up')}>Começar Grátis</Button>
           </div>
 
           {/* Mobile Menu Button */}
-          <button
+          {/* <button
             className="md:hidden p-2 text-foreground"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
@@ -73,11 +75,11 @@ export function Header() {
             ) : (
               <Menu className="w-6 h-6" />
             )}
-          </button>
+          </button> */}
         </nav>
 
         {/* Mobile Menu */}
-        {isMobileMenuOpen && (
+        {/* {isMobileMenuOpen && (
           <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-lg border-b border-border p-4">
             <div className="flex flex-col gap-4">
               {navLinks.map(link => (
@@ -98,7 +100,7 @@ export function Header() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </header>
   )

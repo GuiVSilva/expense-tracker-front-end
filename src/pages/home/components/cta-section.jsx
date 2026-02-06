@@ -53,10 +53,6 @@ export function CTASection() {
                 <div className="w-2 h-2 rounded-full bg-primary" />
                 <span>100% gratuito</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-primary" />
-                <span>Sem anúncios</span>
-              </div>
             </div>
           </div>
         </div>
