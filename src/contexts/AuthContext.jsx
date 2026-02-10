@@ -1,55 +1,52 @@
-import { api } from "@/services/api";
-import { authService } from "@/services/auth";
-import { createContext, useState, useEffect, useContext } from "react";
+import { api } from '@/services/api'
+import { authService } from '@/services/auth'
+import { usersService } from '@/services/users'
+import { createContext, useState, useEffect, useContext } from 'react'
 
-const AuthContext = createContext({});
+const AuthContext = createContext({})
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  const setSession = (token, userData) => {
+    localStorage.setItem('@ExpenseTracker:token', token)
+    localStorage.setItem('@ExpenseTracker:user', JSON.stringify(userData))
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    setUser(userData)
+  }
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("@ExpenseTracker:token");
-    const storedUser = localStorage.getItem("@ExpenseTracker:user");
+    const storedToken = localStorage.getItem('@ExpenseTracker:token')
+    const storedUser = localStorage.getItem('@ExpenseTracker:user')
 
     if (storedToken && storedUser) {
-      setUser(JSON.parse(storedUser));
-      // Configura o cabeçalho de todas as chamadas API com o token encontrado
-      api.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+      api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`
+      setUser(JSON.parse(storedUser))
     }
 
-    setLoading(false);
-  }, []);
+    setLoading(false)
+  }, [])
 
   async function login({ email, password }) {
-    const { token, user: userData } = await authService.login(email, password);
-
-    localStorage.setItem("@ExpenseTracker:token", token);
-    localStorage.setItem("@ExpenseTracker:user", JSON.stringify(userData));
-
-    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    setUser(userData);
+    const { token, user: userData } = await authService.login(email, password)
+    setSession(token, userData)
   }
 
   async function signUp({ name, email, password }) {
-    const { token, user: userData } = await authService.signUp({
+    const { token, user: userData } = await usersService.signUp(
       name,
       email,
-      password,
-    });
-
-    localStorage.setItem("@ExpenseTracker:token", token);
-    localStorage.setItem("@ExpenseTracker:user", JSON.stringify(userData));
-
-    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    setUser(userData);
+      password
+    )
+    setSession(token, userData)
   }
 
   function logout() {
-    localStorage.removeItem("@ExpenseTracker:token");
-    localStorage.removeItem("@ExpenseTracker:user");
-    setUser(null);
-    delete api.defaults.headers.common["Authorization"];
+    localStorage.removeItem('@ExpenseTracker:token')
+    localStorage.removeItem('@ExpenseTracker:user')
+    setUser(null)
+    delete api.defaults.headers.common['Authorization']
   }
 
   return (
@@ -58,7 +55,7 @@ export function AuthProvider({ children }) {
     >
       {children}
     </AuthContext.Provider>
-  );
+  )
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext)

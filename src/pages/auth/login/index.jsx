@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { Link } from "react-router";
-import { useNavigate } from "react-router";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState } from 'react'
+import { Link } from 'react-router'
+import { useNavigate } from 'react-router'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Eye,
   EyeOff,
@@ -11,36 +11,39 @@ import {
   ArrowRight,
   TrendingUp,
   Shield,
-  Zap,
-} from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+  Zap
+} from 'lucide-react'
+import { useAuth } from '@/contexts/AuthContext'
+import { toast } from 'sonner'
 
 export const Login = () => {
-  const { login } = useAuth();
-  const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth()
+  const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    remember: false,
-  });
+    email: '',
+    password: '',
+    remember: false
+  })
 
-  const handleSubmit = async () => {
-    setIsLoading(true);
+  const handleSubmit = async e => {
+    e.preventDefault()
+    setIsLoading(true)
     try {
       await login({
         email: formData.email,
-        password: formData.password,
-      });
+        password: formData.password
+      })
 
-      navigate("/dashboard");
+      toast.success('Login bem-sucedido!')
+      navigate('/dashboard')
     } catch (error) {
-      console.error("Erro ao criar conta:", error);
+      toast.error(error.response?.data?.message || 'Erro inesperado')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -59,7 +62,7 @@ export const Login = () => {
           style={{
             backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
                             linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: "50px 50px",
+            backgroundSize: '50px 50px'
           }}
         />
 
@@ -76,7 +79,7 @@ export const Login = () => {
           </Link>
 
           <h1 className="text-4xl xl:text-5xl font-bold text-foreground mb-6 leading-tight text-balance">
-            Controle total das suas{" "}
+            Controle total das suas{' '}
             <span className="text-primary">finanças</span>
           </h1>
 
@@ -163,7 +166,7 @@ export const Login = () => {
                 type="email"
                 placeholder="seu@email.com"
                 value={formData.email}
-                onChange={(e) =>
+                onChange={e =>
                   setFormData({ ...formData, email: e.target.value })
                 }
                 className="h-12 bg-card border-border focus:border-primary"
@@ -184,10 +187,10 @@ export const Login = () => {
               <div className="relative">
                 <Input
                   id="password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="Digite sua senha"
                   value={formData.password}
-                  onChange={(e) =>
+                  onChange={e =>
                     setFormData({ ...formData, password: e.target.value })
                   }
                   className="h-12 bg-card border-border focus:border-primary pr-12"
@@ -227,7 +230,7 @@ export const Login = () => {
           </form>
 
           <p className="mt-8 text-center text-muted-foreground">
-            Ainda não tem uma conta?{" "}
+            Ainda não tem uma conta?{' '}
             <Link
               to="/sign-up"
               className="text-primary hover:text-primary/80 font-semibold transition-colors"
@@ -238,5 +241,5 @@ export const Login = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

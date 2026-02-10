@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { Link } from "react-router";
-import { useNavigate } from "react-router";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState } from 'react'
+import { Link } from 'react-router'
+import { useNavigate } from 'react-router'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Eye,
   EyeOff,
@@ -14,46 +14,47 @@ import {
   Mail,
   Lock,
   TrendingUp,
-  Zap,
-} from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+  Zap
+} from 'lucide-react'
+import { useAuth } from '@/contexts/AuthContext'
 
 export const SignUp = () => {
-  const { signUp } = useAuth();
-  const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { signUp } = useAuth()
+  const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  })
 
   const passwordRequirements = [
-    { text: "Mínimo 8 caracteres", met: formData.password.length >= 8 },
-    { text: "Uma letra maiúscula", met: /[A-Z]/.test(formData.password) },
-    { text: "Uma letra minúscula", met: /[a-z]/.test(formData.password) },
-    { text: "Um número", met: /[0-9]/.test(formData.password) },
-  ];
+    { text: 'Mínimo 8 caracteres', met: formData.password.length >= 8 },
+    { text: 'Uma letra maiúscula', met: /[A-Z]/.test(formData.password) },
+    { text: 'Uma letra minúscula', met: /[a-z]/.test(formData.password) },
+    { text: 'Um número', met: /[0-9]/.test(formData.password) }
+  ]
 
-  const handleSubmit = async () => {
-    setIsLoading(true);
+  const handleSubmit = async e => {
+    e.preventDefault()
+    setIsLoading(true)
     try {
       await signUp({
         name: formData.name,
         email: formData.email,
-        password: formData.password,
-      });
+        password: formData.password
+      })
 
-      navigate("/dashboard");
+      navigate('/dashboard')
     } catch (error) {
-      console.error("Erro ao criar conta:", error);
+      alert(error.response?.data?.message || 'Erro inesperado')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -92,7 +93,7 @@ export const SignUp = () => {
                   type="text"
                   placeholder="Seu nome"
                   value={formData.name}
-                  onChange={(e) =>
+                  onChange={e =>
                     setFormData({ ...formData, name: e.target.value })
                   }
                   className="h-12 bg-card border-border focus:border-primary pl-12"
@@ -110,7 +111,7 @@ export const SignUp = () => {
                   type="email"
                   placeholder="seu@email.com"
                   value={formData.email}
-                  onChange={(e) =>
+                  onChange={e =>
                     setFormData({ ...formData, email: e.target.value })
                   }
                   className="h-12 bg-card border-border focus:border-primary pl-12"
@@ -125,10 +126,10 @@ export const SignUp = () => {
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   id="password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="Crie uma senha forte"
                   value={formData.password}
-                  onChange={(e) =>
+                  onChange={e =>
                     setFormData({ ...formData, password: e.target.value })
                   }
                   className="h-12 bg-card border-border focus:border-primary pl-12 pr-12"
@@ -154,12 +155,12 @@ export const SignUp = () => {
                     <div
                       key={index}
                       className={`flex items-center gap-2 text-xs ${
-                        req.met ? "text-primary" : "text-muted-foreground"
+                        req.met ? 'text-primary' : 'text-muted-foreground'
                       }`}
                     >
                       <div
                         className={`w-4 h-4 rounded-full flex items-center justify-center ${
-                          req.met ? "bg-primary" : "bg-muted"
+                          req.met ? 'bg-primary' : 'bg-muted'
                         }`}
                       >
                         {req.met && (
@@ -179,13 +180,13 @@ export const SignUp = () => {
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   id="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={showConfirmPassword ? 'text' : 'password'}
                   placeholder="Confirme sua senha"
                   value={formData.confirmPassword}
-                  onChange={(e) =>
+                  onChange={e =>
                     setFormData({
                       ...formData,
-                      confirmPassword: e.target.value,
+                      confirmPassword: e.target.value
                     })
                   }
                   className="h-12 bg-card border-border focus:border-primary pl-12 pr-12"
@@ -233,7 +234,7 @@ export const SignUp = () => {
           </form>
 
           <p className="mt-8 text-center text-muted-foreground">
-            Já tem uma conta?{" "}
+            Já tem uma conta?{' '}
             <Link
               to="/login"
               className="text-primary hover:text-primary/80 font-semibold transition-colors"
@@ -259,7 +260,7 @@ export const SignUp = () => {
           style={{
             backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
                       linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: "50px 50px",
+            backgroundSize: '50px 50px'
           }}
         />
 
@@ -331,5 +332,5 @@ export const SignUp = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
