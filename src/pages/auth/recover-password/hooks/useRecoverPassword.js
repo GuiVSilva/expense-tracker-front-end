@@ -1,4 +1,6 @@
+import { usersService } from '@/services/users'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 export const useRecoverPassword = () => {
   const [step, setStep] = useState('email')
@@ -27,10 +29,15 @@ export const useRecoverPassword = () => {
 
     setIsLoading(true)
     setEmailError('')
-    await new Promise(resolve => setTimeout(resolve, 1200))
-
-    handleStepChange('code')
-    setIsLoading(false)
+    try {
+      await usersService.sendCodeRecoveryPassword(email)
+      handleStepChange('code')
+    } catch (error) {
+      console.log(error)
+      toast.error('Ocorreu um erro ao enviar o código. Tente novamente.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleVerifyCode = async enteredCode => {
@@ -57,10 +64,17 @@ export const useRecoverPassword = () => {
 
   const handleResendCode = async () => {
     setIsLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 1000))
     setCode(['', '', '', '', '', ''])
     setCodeError('')
-    setIsLoading(false)
+    try {
+      await usersService.sendCodeRecoveryPassword(email)
+      toast.success('Código reenviado com sucesso!')
+    } catch (error) {
+      console.log(error)
+      toast.error('Ocorreu um erro ao reenviar o código. Tente novamente.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleBackToEmail = () => {

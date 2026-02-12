@@ -17,6 +17,7 @@ import {
   Zap
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { toast } from 'sonner'
 
 export const SignUp = () => {
   const { signUp } = useAuth()
@@ -48,9 +49,10 @@ export const SignUp = () => {
         password: formData.password
       })
 
+      toast.success('Conta criada com sucesso!')
       navigate('/dashboard')
     } catch (error) {
-      alert(error.response?.data?.message || 'Erro inesperado')
+      toast.error(error.response?.data?.message || 'Erro inesperado')
     } finally {
       setIsLoading(false)
     }
