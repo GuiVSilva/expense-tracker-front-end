@@ -42,24 +42,37 @@ export const useRecoverPassword = () => {
 
   const handleVerifyCode = async enteredCode => {
     setIsLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 1200))
+    setCodeError('')
 
-    if (enteredCode !== '123456') {
-      setCodeError('Codigo invalido. Tente novamente.')
+    try {
+      await usersService.verifyCodeRecoveryPassword(email, enteredCode)
+
+      handleStepChange('password')
+    } catch (error) {
+      console.error(error)
+
+      const message =
+        error.response?.data?.message || 'Código inválido ou expirado.'
+      setCodeError(message)
+    } finally {
       setIsLoading(false)
-      return
     }
-
-    handleStepChange('password')
-    setIsLoading(false)
   }
 
   const handleResetPassword = async () => {
     setIsLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    try {
+      await usersService.resetPassword({
+        email,
+        password
+      })
 
-    handleStepChange('success')
-    setIsLoading(false)
+      handleStepChange('success')
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Erro ao redefinir senha.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleResendCode = async () => {

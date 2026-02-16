@@ -6,6 +6,8 @@ import { Dashboard } from './pages/dashboard'
 import { ProtectedRoute } from './components/auth/protected-route'
 import { AuthProvider } from './contexts/AuthContext'
 import { RecoverPassword } from './pages/auth/recover-password'
+import { AppLayout } from './components/layout/app-layout'
+import { Transactions } from './pages/transactions'
 
 const App = () => {
   return (
@@ -17,13 +19,16 @@ const App = () => {
           <Route path="/sign-up" element={<SignUp />}></Route>
           <Route path="/recover-password" element={<RecoverPassword />}></Route>
           <Route
-            path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <AppLayout />
               </ProtectedRoute>
             }
-          ></Route>
+          >
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/transactions" element={<Transactions />} />
+            {/* <Route path="/metas" element={<Goals />} /> */}
+          </Route>
         </Routes>
       </Router>
     </AuthProvider>

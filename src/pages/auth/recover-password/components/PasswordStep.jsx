@@ -18,16 +18,16 @@ export const PasswordStep = ({
   const passwordChecks = {
     length: password.length >= 8,
     uppercase: /[A-Z]/.test(password),
-    number: /\d/.test(password),
-    special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+    number: /\d/.test(password)
   }
   const allPasswordChecks = Object.values(passwordChecks).every(Boolean)
   const passwordsMatch = password === confirmPassword && confirmPassword !== ''
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault()
     onSubmit(password)
   }
+  
 
   return (
     <>
@@ -35,9 +35,7 @@ export const PasswordStep = ({
         <div className="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center mb-4 mx-auto lg:mx-0">
           <Lock className="w-7 h-7 text-accent" />
         </div>
-        <h2 className="text-3xl font-bold text-foreground mb-2">
-          Nova senha
-        </h2>
+        <h2 className="text-3xl font-bold text-foreground mb-2">Nova senha</h2>
         <p className="text-muted-foreground">
           Crie uma senha forte para proteger sua conta
         </p>
@@ -52,7 +50,7 @@ export const PasswordStep = ({
               type={showPassword ? 'text' : 'password'}
               placeholder="Crie sua nova senha"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               className="h-12 bg-card border-border focus:border-primary pr-12"
               required
             />
@@ -78,19 +76,15 @@ export const PasswordStep = ({
               type={showConfirmPassword ? 'text' : 'password'}
               placeholder="Repita a nova senha"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={e => setConfirmPassword(e.target.value)}
               className={`h-12 bg-card border-border focus:border-primary pr-12 ${
-                confirmPassword && !passwordsMatch
-                  ? 'border-destructive'
-                  : ''
+                confirmPassword && !passwordsMatch ? 'border-destructive' : ''
               }`}
               required
             />
             <button
               type="button"
-              onClick={() =>
-                setShowConfirmPassword(!showConfirmPassword)
-              }
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             >
               {showConfirmPassword ? (
@@ -121,11 +115,7 @@ export const PasswordStep = ({
               check: passwordChecks.uppercase,
               label: 'Uma letra maiuscula'
             },
-            { check: passwordChecks.number, label: 'Um numero' },
-            {
-              check: passwordChecks.special,
-              label: 'Um caractere especial (!@#$%)'
-            }
+            { check: passwordChecks.number, label: 'Um numero' }
           ].map((item, i) => (
             <div key={i} className="flex items-center gap-2.5">
               <div
@@ -139,9 +129,7 @@ export const PasswordStep = ({
               </div>
               <span
                 className={`text-sm transition-colors duration-300 ${
-                  item.check
-                    ? 'text-foreground'
-                    : 'text-muted-foreground'
+                  item.check ? 'text-foreground' : 'text-muted-foreground'
                 }`}
               >
                 {item.label}
