@@ -4,6 +4,8 @@ import {
   Wallet,
   Home,
   CreditCard,
+  CalendarClock,
+  ReceiptText,
   Target,
   PieChart,
   BarChart3,
@@ -31,6 +33,8 @@ export const AppLayout = () => {
   const navItems = [
     { icon: Home, label: 'Dashboard', href: '/dashboard' },
     { icon: CreditCard, label: 'Transações', href: '/transactions' },
+    { icon: ReceiptText, label: 'Contas', href: '/accounts' },
+    { icon: CalendarClock, label: 'Calendário', href: '/financial-calendar' },
     { icon: Target, label: 'Metas', href: '/goals' },
     { icon: PieChart, label: 'Orçamento', href: '/monthly-budget' },
     { icon: BarChart3, label: 'Relatórios', href: '/reports' }

@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { AlertTriangle, Pencil } from 'lucide-react'
+import { AlertTriangle, ArrowUpRight, Pencil } from 'lucide-react'
 import {
   formatCurrency,
   getAlertText,
@@ -10,7 +10,7 @@ import {
   getUsageStatus
 } from '../utils/monthlyBudgetUtils'
 
-export const BudgetCategoryCard = ({ category, onConfigure }) => {
+export const BudgetCategoryCard = ({ category, onConfigure, onDetails }) => {
   const percent = getUsagePercent(category)
   const status = getUsageStatus(category)
   const alertText = getAlertText(category)
@@ -54,14 +54,16 @@ export const BudgetCategoryCard = ({ category, onConfigure }) => {
           </div>
         </div>
 
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={() => onConfigure(category.id)}
-        >
-          <Pencil className="w-4 h-4 mr-2" />
-          Configurar limite
-        </Button>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <Button variant="outline" className="w-full" onClick={() => onConfigure(category.id)}>
+            <Pencil className="w-4 h-4 mr-2" />
+            Configurar limite
+          </Button>
+          <Button variant="secondary" className="w-full" onClick={() => onDetails(category.name)}>
+            <ArrowUpRight className="w-4 h-4 mr-2" />
+            Ver detalhes
+          </Button>
+        </div>
       </CardContent>
     </Card>
   )

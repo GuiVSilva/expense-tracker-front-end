@@ -1,8 +1,10 @@
 import { Button } from '@/components/ui/button'
 import { ArrowRight, TrendingUp, Wallet, PieChart } from 'lucide-react'
+import { useNavigate } from 'react-router'
 import { useEffect, useState } from 'react'
 
 export function HeroSection() {
+  const navigate = useNavigate()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -49,13 +51,17 @@ export function HeroSection() {
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-10 text-pretty">
-            Acompanhe suas receitas e despesas de forma simples e visual. Tome
-            decisões financeiras mais inteligentes com insights em tempo real.
+            Metas, orçamento, calendário financeiro, contas a receber/pagar e
+            relatórios com exportação CSV em um único lugar.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-16">
-            <Button size="lg" className="group px-8 h-14 text-base font-medium">
+            <Button
+              size="lg"
+              className="group px-8 h-14 text-base font-medium"
+              onClick={() => navigate('/sign-up')}
+            >
               Comece Agora
               <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Button>
@@ -63,8 +69,9 @@ export function HeroSection() {
               size="lg"
               variant="outline"
               className="px-8 h-14 text-base font-medium bg-transparent"
+              onClick={() => navigate('/login')}
             >
-              Ver Demonstração
+              Entrar no sistema
             </Button>
           </div>
 
@@ -76,26 +83,24 @@ export function HeroSection() {
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Wallet className="w-6 h-6 text-primary" />
               </div>
-              <p className="text-3xl font-bold text-foreground mb-1">R$ 0,00</p>
-              <p className="text-sm text-muted-foreground">Saldo Inicial</p>
+              <p className="text-3xl font-bold text-foreground mb-1">5+</p>
+              <p className="text-sm text-muted-foreground">Módulos financeiros</p>
             </div>
 
             <div className="group relative p-6 rounded-2xl bg-card/50 border border-border backdrop-blur-sm hover:bg-card/80 transition-all hover:border-accent/50 hover:shadow-[0_0_30px_rgba(255,150,0,0.1)]">
               <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <TrendingUp className="w-6 h-6 text-accent" />
               </div>
-              <p className="text-3xl font-bold text-foreground mb-1">100%</p>
-              <p className="text-sm text-muted-foreground">Gratuito</p>
+              <p className="text-3xl font-bold text-foreground mb-1">CSV</p>
+              <p className="text-sm text-muted-foreground">Exportação de relatórios</p>
             </div>
 
             <div className="group relative p-6 rounded-2xl bg-card/50 border border-border backdrop-blur-sm hover:bg-card/80 transition-all hover:border-chart-4/50 hover:shadow-[0_0_30px_rgba(100,100,255,0.1)]">
               <div className="w-12 h-12 rounded-xl bg-chart-4/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <PieChart className="w-6 h-6 text-chart-4" />
               </div>
-              <p className="text-3xl font-bold text-foreground mb-1">
-                Ilimitado
-              </p>
-              <p className="text-sm text-muted-foreground">Transações</p>
+              <p className="text-3xl font-bold text-foreground mb-1">Parcial</p>
+              <p className="text-sm text-muted-foreground">Pagamentos múltiplos</p>
             </div>
           </div>
         </div>

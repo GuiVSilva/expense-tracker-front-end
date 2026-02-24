@@ -1,63 +1,64 @@
 import {
   BarChart3,
-  Bell,
+  CalendarClock,
   CreditCard,
-  Lock,
-  Smartphone,
-  Zap
+  FileSpreadsheet,
+  Goal,
+  HandCoins
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
 const features = [
   {
-    icon: BarChart3,
-    title: 'Relatórios Visuais',
+    icon: Goal,
+    title: 'Metas Financeiras',
     description:
-      'Gráficos intuitivos que mostram para onde seu dinheiro está indo.',
+      'Crie metas, acompanhe progresso e visualize projeção de conclusão.',
     color: 'text-primary',
     bgColor: 'bg-primary/10',
     borderColor: 'hover:border-primary/50'
   },
   {
     icon: CreditCard,
-    title: 'Controle de Despesas',
+    title: 'Orçamento por Categoria',
     description:
-      'Categorize e acompanhe cada centavo gasto de forma organizada.',
+      'Defina limites mensais e receba alertas visuais ao aproximar do teto.',
     color: 'text-destructive',
     bgColor: 'bg-destructive/10',
     borderColor: 'hover:border-destructive/50'
   },
   {
-    icon: Bell,
-    title: 'Alertas Inteligentes',
+    icon: HandCoins,
+    title: 'Contas a Receber/Pagar',
     description:
-      'Receba notificações quando estiver próximo do seu limite de gastos.',
+      'Gerencie parcelas, pagamentos parciais e múltiplas formas de pagamento.',
     color: 'text-accent',
     bgColor: 'bg-accent/10',
     borderColor: 'hover:border-accent/50'
   },
   {
-    icon: Lock,
-    title: 'Segurança Total',
-    description: 'Seus dados financeiros protegidos com criptografia de ponta.',
+    icon: CalendarClock,
+    title: 'Calendário Financeiro',
+    description:
+      'Visualize vencimentos, entradas e metas em uma agenda mensal unificada.',
     color: 'text-chart-4',
     bgColor: 'bg-chart-4/10',
     borderColor: 'hover:border-chart-4/50'
   },
   {
-    icon: Smartphone,
-    title: 'Acesso em Qualquer Lugar',
+    icon: BarChart3,
+    title: 'Relatórios Inteligentes',
     description:
-      'Interface responsiva que funciona perfeitamente em todos os dispositivos.',
+      'Acompanhe receitas, despesas, categorias e evolução mensal com insights.',
     color: 'text-chart-5',
     bgColor: 'bg-chart-5/10',
     borderColor: 'hover:border-chart-5/50'
   },
   {
-    icon: Zap,
-    title: 'Rápido e Eficiente',
+    icon: FileSpreadsheet,
+    title: 'Exportação CSV',
     description:
-      'Adicione transações em segundos com uma interface simplificada.',
+      'Exporte relatórios por tipo e período para análise externa e auditoria.',
     color: 'text-primary',
     bgColor: 'bg-primary/10',
     borderColor: 'hover:border-primary/50'
@@ -104,8 +105,8 @@ export function FeaturesSection() {
             <span className="text-primary">controlar suas finanças</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto text-pretty">
-            Ferramentas poderosas e fáceis de usar para você alcançar seus
-            objetivos financeiros.
+            Um ecossistema completo para planejar, acompanhar e analisar sua vida
+            financeira.
           </p>
         </div>
 

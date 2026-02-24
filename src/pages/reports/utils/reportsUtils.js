@@ -5,6 +5,14 @@ export const periodOptions = [
   { value: 'year', label: 'Ano' }
 ]
 
+export const exportTypeOptions = [
+  { value: 'summary', label: 'Resumo consolidado' },
+  { value: 'income-expense', label: 'Receitas vs despesas' },
+  { value: 'categories', label: 'Distribuicao por categoria' },
+  { value: 'evolution', label: 'Evolucao mensal' },
+  { value: 'insights', label: 'Insights automaticos' }
+]
+
 export const periodSizeMap = {
   month: 1,
   quarter: 3,
@@ -118,4 +126,122 @@ export const percentageDelta = (current, previous) => {
 export const getDaysFromMonthKey = monthKey => {
   const [year, month] = monthKey.split('-').map(Number)
   return new Date(year, month, 0).getDate()
+}
+
+const escapeCsv = value => {
+  const stringValue = String(value ?? '')
+  if (/[",;\n]/.test(stringValue)) {
+    return `"${stringValue.replace(/"/g, '""')}"`
+  }
+  return stringValue
+}
+
+const toCsv = (headers, rows) => {
+  const headerLine = headers.map(escapeCsv).join(';')
+  const lines = rows.map(row => headers.map(header => escapeCsv(row[header])).join(';'))
+  return [headerLine, ...lines].join('\n')
+}
+
+const getTodayStamp = () => {
+  const date = new Date()
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const year = date.getFullYear()
+  return `${year}-${month}-${day}`
+}
+
+export const buildReportExportFile = ({
+  type,
+  periodLabel,
+  summary,
+  barChartData,
+  categoryDistribution,
+  monthlyEvolution,
+  insights
+}) => {
+  const todayStamp = getTodayStamp()
+
+  if (type === 'summary') {
+    const headers = ['periodo', 'total_receitas', 'total_despesas', 'saldo', 'media_diaria_gastos']
+    const rows = [
+      {
+        periodo: periodLabel,
+        total_receitas: summary.totalIncome,
+        total_despesas: summary.totalExpense,
+        saldo: summary.balance,
+        media_diaria_gastos: summary.dailyAverageExpense.toFixed(2)
+      }
+    ]
+
+    return {
+      filename: `relatorio-resumo-${todayStamp}.csv`,
+      csv: toCsv(headers, rows)
+    }
+  }
+
+  if (type === 'income-expense') {
+    const headers = ['mes', 'receita', 'despesa', 'saldo']
+    const rows = barChartData.map(item => ({
+      mes: item.label,
+      receita: item.income,
+      despesa: item.expense,
+      saldo: item.income - item.expense
+    }))
+
+    return {
+      filename: `relatorio-receitas-despesas-${todayStamp}.csv`,
+      csv: toCsv(headers, rows)
+    }
+  }
+
+  if (type === 'categories') {
+    const headers = ['categoria', 'valor', 'percentual']
+    const rows = categoryDistribution.map(item => ({
+      categoria: item.name,
+      valor: item.amount,
+      percentual: `${item.percent.toFixed(2)}%`
+    }))
+
+    return {
+      filename: `relatorio-categorias-${todayStamp}.csv`,
+      csv: toCsv(headers, rows)
+    }
+  }
+
+  if (type === 'insights') {
+    const headers = ['titulo', 'descricao']
+    const rows = insights.map(item => ({
+      titulo: item.title,
+      descricao: item.description
+    }))
+
+    return {
+      filename: `relatorio-insights-${todayStamp}.csv`,
+      csv: toCsv(headers, rows)
+    }
+  }
+
+  const headers = [
+    'mes',
+    'receita',
+    'despesa',
+    'saldo',
+    'variacao_receita',
+    'variacao_despesa',
+    'variacao_saldo'
+  ]
+  const rows = monthlyEvolution.map(item => ({
+    mes: item.label,
+    receita: item.income,
+    despesa: item.expense,
+    saldo: item.balance,
+    variacao_receita: `${item.incomeDelta.toFixed(2)}%`,
+    variacao_despesa: `${item.expenseDelta.toFixed(2)}%`,
+    variacao_saldo: `${item.balanceDelta.toFixed(2)}%`
+  }))
+
+  return {
+    filename: `relatorio-evolucao-${todayStamp}.csv`,
+    csv: toCsv(headers, rows)
+  }
 }

@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router'
 import { BudgetCategoriesGrid } from './components/BudgetCategoriesGrid'
 import { BudgetConfigModal } from './components/BudgetConfigModal'
 import { BudgetSummary } from './components/BudgetSummary'
@@ -5,6 +6,8 @@ import { MonthlyBudgetHeader } from './components/MonthlyBudgetHeader'
 import { useMonthlyBudget } from './hooks/useMonthlyBudget'
 
 export const MonthlyBudget = () => {
+  const navigate = useNavigate()
+
   const {
     categories,
     summary,
@@ -19,13 +22,21 @@ export const MonthlyBudget = () => {
     saveLimit
   } = useMonthlyBudget()
 
+  const handleOpenDetails = categoryName => {
+    navigate(`/categories/${encodeURIComponent(categoryName)}`)
+  }
+
   return (
     <div className="space-y-8">
       <MonthlyBudgetHeader onConfigure={() => openConfigModal(categories[0]?.id)} />
 
       <BudgetSummary summary={summary} />
 
-      <BudgetCategoriesGrid categories={categories} onConfigure={openConfigModal} />
+      <BudgetCategoriesGrid
+        categories={categories}
+        onConfigure={openConfigModal}
+        onDetails={handleOpenDetails}
+      />
 
       <BudgetConfigModal
         open={configOpen}

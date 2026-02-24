@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import {
   getDaysFromMonthKey,
   monthlyData,
+  periodOptions,
   percentageDelta,
   periodSizeMap
 } from '../utils/reportsUtils'
@@ -15,6 +16,10 @@ export const useReports = () => {
   }, [period])
 
   const barChartData = useMemo(() => filteredMonths.slice(-6), [filteredMonths])
+
+  const periodLabel = useMemo(() => {
+    return periodOptions.find(option => option.value === period)?.label || period
+  }, [period])
 
   const summary = useMemo(() => {
     const totalIncome = filteredMonths.reduce((acc, month) => acc + month.income, 0)
@@ -112,6 +117,7 @@ export const useReports = () => {
 
   return {
     period,
+    periodLabel,
     setPeriod,
     summary,
     barChartData,

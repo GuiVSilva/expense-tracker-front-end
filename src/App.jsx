@@ -12,6 +12,9 @@ import { Goals } from './pages/goals'
 import { MonthlyBudget } from './pages/monthly-budget'
 import { Reports } from './pages/reports'
 import { SettingsPage } from './pages/settings'
+import { CategoryDetails } from './pages/category-details'
+import { FinancialCalendar } from './pages/financial-calendar'
+import { AccountsPayableReceivable } from './pages/accounts-payable-receivable'
 import { ThemeProvider } from './components/theme/theme-provider'
 import { PublicRouteWrapper } from './components/theme/public-route-wrapper'
 
@@ -63,8 +66,14 @@ const App = () => {
           >
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/transactions" element={<Transactions />} />
+            <Route path="/accounts" element={<AccountsPayableReceivable />} />
             <Route path="/goals" element={<Goals />} />
             <Route path="/monthly-budget" element={<MonthlyBudget />} />
+            <Route path="/financial-calendar" element={<FinancialCalendar />} />
+            <Route
+              path="/categories/:categoryName"
+              element={<CategoryDetails />}
+            />
             <Route path="/reports" element={<Reports />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
