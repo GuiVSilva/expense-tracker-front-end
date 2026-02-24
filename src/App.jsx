@@ -8,26 +8,65 @@ import { AuthProvider } from './contexts/AuthContext'
 import { RecoverPassword } from './pages/auth/recover-password'
 import { AppLayout } from './components/layout/app-layout'
 import { Transactions } from './pages/transactions'
+import { Goals } from './pages/goals'
+import { MonthlyBudget } from './pages/monthly-budget'
+import { Reports } from './pages/reports'
+import { SettingsPage } from './pages/settings'
+import { ThemeProvider } from './components/theme/theme-provider'
+import { PublicRouteWrapper } from './components/theme/public-route-wrapper'
 
 const App = () => {
   return (
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Home />}></Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/sign-up" element={<SignUp />}></Route>
-          <Route path="/recover-password" element={<RecoverPassword />}></Route>
+          <Route
+            path="/"
+            element={
+              <PublicRouteWrapper>
+                <Home />
+              </PublicRouteWrapper>
+            }
+          ></Route>
+          <Route
+            path="/login"
+            element={
+              <PublicRouteWrapper>
+                <Login />
+              </PublicRouteWrapper>
+            }
+          ></Route>
+          <Route
+            path="/sign-up"
+            element={
+              <PublicRouteWrapper>
+                <SignUp />
+              </PublicRouteWrapper>
+            }
+          ></Route>
+          <Route
+            path="/recover-password"
+            element={
+              <PublicRouteWrapper>
+                <RecoverPassword />
+              </PublicRouteWrapper>
+            }
+          ></Route>
           <Route
             element={
               <ProtectedRoute>
-                <AppLayout />
+                <ThemeProvider>
+                  <AppLayout />
+                </ThemeProvider>
               </ProtectedRoute>
             }
           >
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/transactions" element={<Transactions />} />
-            {/* <Route path="/metas" element={<Goals />} /> */}
+            <Route path="/goals" element={<Goals />} />
+            <Route path="/monthly-budget" element={<MonthlyBudget />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/settings" element={<SettingsPage />} />
           </Route>
         </Routes>
       </Router>

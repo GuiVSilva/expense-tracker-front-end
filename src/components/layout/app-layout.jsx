@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router'
-import { Button } from '@/components/ui/button'
 import {
   Wallet,
   Home,
   CreditCard,
-  PieChart,
   Target,
+  PieChart,
+  BarChart3,
   Settings,
   LogOut,
   User,
@@ -23,16 +23,17 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/contexts/AuthContext'
 
-export const AppLayout = () => {1
-  const { user, signOut } = useAuth()
+export const AppLayout = () => {
+  const { user, logout } = useAuth()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const location = useLocation()
 
   const navItems = [
     { icon: Home, label: 'Dashboard', href: '/dashboard' },
-    { icon: CreditCard, label: 'Transações', href: '/transactions' }
-    // { icon: PieChart, label: 'Relatórios', href: '/relatorios' },
-    // { icon: Target, label: 'Metas', href: '/metas' },
+    { icon: CreditCard, label: 'Transações', href: '/transactions' },
+    { icon: Target, label: 'Metas', href: '/goals' },
+    { icon: PieChart, label: 'Orçamento', href: '/monthly-budget' },
+    { icon: BarChart3, label: 'Relatórios', href: '/reports' }
     // { icon: Settings, label: 'Configurações', href: '/configuracoes' }
   ]
 
@@ -119,16 +120,20 @@ export const AppLayout = () => {1
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem>
-                  <User className="w-4 h-4 mr-2" /> Meu Perfil
+                <DropdownMenuItem asChild>
+                  <Link to="/settings#profile">
+                    <User className="w-4 h-4 mr-2" /> Meu Perfil
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings className="w-4 h-4 mr-2" /> Configurações
+                <DropdownMenuItem asChild>
+                  <Link to="/settings#preferences">
+                    <Settings className="w-4 h-4 mr-2" /> Configurações
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="text-destructive"
-                  onClick={signOut}
+                  onClick={logout}
                 >
                   <LogOut className="w-4 h-4 mr-2" /> Sair
                 </DropdownMenuItem>
