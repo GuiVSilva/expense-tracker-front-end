@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
+import { categoriesService } from '@/services/categories'
 import { useTransactions } from './hooks/useTransactions'
 import { TransactionsFilters } from './components/TransactionsFilters'
 import { TransactionsSummary } from './components/TransactionsSummary'
@@ -41,11 +43,16 @@ export const Transactions = () => {
     filteredTransactions,
     paginatedTransactions,
     summary,
-    uniqueCategories,
     totalPages,
     updateFilter,
     clearFilters
   } = useTransactions(allTransactions)
+
+  const { data: categoriesData } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => categoriesService.getCategories()
+  })
+  console.log('categoriesData', categoriesData)
 
   const formatCurrency = value =>
     new Intl.NumberFormat('pt-BR', {
@@ -82,7 +89,7 @@ export const Transactions = () => {
 
       <TransactionsFilters
         filters={filters}
-        uniqueCategories={uniqueCategories}
+        categories={categoriesData}
         onFilterChange={updateFilter}
         onClearFilters={clearFilters}
       />
@@ -117,7 +124,7 @@ export const Transactions = () => {
         setDetailTransaction={setDetailTransaction}
         deleteConfirm={deleteConfirm}
         setDeleteConfirm={setDeleteConfirm}
-        uniqueCategories={uniqueCategories}
+        categories={categoriesData}
         formatCurrency={formatCurrency}
         formatDate={formatDateShort}
       />

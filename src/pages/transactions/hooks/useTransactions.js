@@ -81,10 +81,6 @@ export const useTransactions = initialTransactions => {
     }
   }, [initialTransactions])
 
-  const uniqueCategories = [
-    ...new Set(initialTransactions.map(t => t.category))
-  ]
-
   const updateFilter = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }))
     setCurrentPage(1)
@@ -107,7 +103,6 @@ export const useTransactions = initialTransactions => {
     filteredTransactions,
     paginatedTransactions,
     summary,
-    uniqueCategories,
     totalPages,
     updateFilter,
     clearFilters

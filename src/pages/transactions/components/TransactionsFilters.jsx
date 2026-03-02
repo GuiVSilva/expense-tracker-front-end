@@ -14,7 +14,7 @@ import { Search, Filter, Download, X } from 'lucide-react'
 
 export const TransactionsFilters = ({
   filters,
-  uniqueCategories,
+  categories,
   onFilterChange,
   onClearFilters
 }) => {
@@ -107,9 +107,9 @@ export const TransactionsFilters = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todas categorias</SelectItem>
-                  {uniqueCategories.map(cat => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat}
+                  {categories.map(cat => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      {cat.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
