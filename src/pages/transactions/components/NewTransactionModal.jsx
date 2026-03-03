@@ -21,6 +21,9 @@ import {
 import { TrendingUp, TrendingDown, Plus } from 'lucide-react'
 import { getInitialTransactionForm } from '../constants/transactionForm'
 import { transactionSchema } from '../schemas/transactionSchema'
+import { toast } from 'sonner'
+import { useState } from 'react'
+import { transactionsService } from '@/services/transactions'
 
 export const NewTransactionModal = ({ open, onOpenChange, categories }) => {
   const {
@@ -34,6 +37,7 @@ export const NewTransactionModal = ({ open, onOpenChange, categories }) => {
     resolver: zodResolver(transactionSchema),
     defaultValues: getInitialTransactionForm()
   })
+  const [isLoading, setIsLoading] = useState(false)
 
   const transactionType = watch('type')
   if (!open) return null
@@ -45,10 +49,25 @@ export const NewTransactionModal = ({ open, onOpenChange, categories }) => {
     }
   }
 
-  const handleNewTransaction = data => {
-    console.log('data', data)
-    onOpenChange(false)
-    reset(getInitialTransactionForm())
+  const handleNewTransaction = async data => {
+    setIsLoading(true)
+    try {
+      await transactionsService.createTransaction({
+        description: data.description,
+        category: data.category,
+        amount: data.amount,
+        type: data.type,
+        date: data.date,
+        method: data.method
+      })
+      toast.success('Transação criada com sucesso!')
+      reset(getInitialTransactionForm())
+      onOpenChange(false)
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Erro inesperado')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -182,18 +201,16 @@ export const NewTransactionModal = ({ open, onOpenChange, categories }) => {
                         <SelectValue placeholder="Selecione" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="PIX">PIX</SelectItem>
-                        <SelectItem value="Cartao Credito">
+                        <SelectItem value="pix">PIX</SelectItem>
+                        <SelectItem value="credit_card">
                           Cartão Crédito
                         </SelectItem>
-                        <SelectItem value="Cartao Debito">
+                        <SelectItem value="debit_card">
                           Cartão Débito
                         </SelectItem>
-                        <SelectItem value="Transferencia">
-                          Transferência
-                        </SelectItem>
-                        <SelectItem value="Boleto">Boleto</SelectItem>
-                        <SelectItem value="Dinheiro">Dinheiro</SelectItem>
+                        <SelectItem value="transfer">Transferência</SelectItem>
+                        <SelectItem value="ticket">Boleto</SelectItem>
+                        <SelectItem value="money">Dinheiro</SelectItem>
                       </SelectContent>
                     </Select>
                   )}
@@ -223,6 +240,7 @@ export const NewTransactionModal = ({ open, onOpenChange, categories }) => {
                   ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
                   : 'bg-destructive hover:bg-destructive/90 text-destructive-foreground'
               }
+              loading={isLoading}
             >
               <Plus className="w-4 h-4 mr-2" />
               Adicionar

@@ -213,19 +213,13 @@ export const Login = () => {
             <Button
               type="submit"
               className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
-              disabled={isLoading}
+              loading={isLoading}
+              loadingText="Entrando..."
             >
-              {isLoading ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                  Entrando...
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  Entrar
-                  <ArrowRight className="w-5 h-5" />
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                Entrar
+                <ArrowRight className="w-5 h-5" />
+              </div>
             </Button>
           </form>
 

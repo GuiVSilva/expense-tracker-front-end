@@ -43,17 +43,38 @@ function Button({
   variant = "default",
   size = "default",
   asChild = false,
+  loading = false,
+  loadingText = "Carregando...",
+  disabled,
+  children,
   ...props
 }) {
   const Comp = asChild ? Slot.Root : "button"
+  const isDisabled = disabled || loading
 
   return (
     <Comp
       data-slot="button"
       data-variant={variant}
       data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props} />
+      data-loading={loading ? "true" : "false"}
+      aria-busy={loading || undefined}
+      disabled={asChild ? undefined : isDisabled}
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        loading && "pointer-events-none"
+      )}
+      {...props}
+    >
+      {loading ? (
+        <span className="flex items-center gap-2">
+          <span className="size-4 border-2 border-current/30 border-t-current rounded-full animate-spin" />
+          {loadingText}
+        </span>
+      ) : (
+        children
+      )}
+    </Comp>
   );
 }
 

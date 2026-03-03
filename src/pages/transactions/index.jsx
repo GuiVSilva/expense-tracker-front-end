@@ -52,7 +52,6 @@ export const Transactions = () => {
     queryKey: ['categories'],
     queryFn: () => categoriesService.getCategories()
   })
-  console.log('categoriesData', categoriesData)
 
   const formatCurrency = value =>
     new Intl.NumberFormat('pt-BR', {
