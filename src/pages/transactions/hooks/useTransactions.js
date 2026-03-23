@@ -1,85 +1,65 @@
-import { useState, useMemo } from 'react'
+import { categoriesService } from '@/services/categories'
+import { transactionsService } from '@/services/transactions'
+import { useDebounce } from '@/hooks/useDebounce'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 
 const ITEMS_PER_PAGE = 8
 
-export const useTransactions = initialTransactions => {
+export const useTransactions = () => {
   const [filters, setFilters] = useState({
     search: '',
     type: 'all',
     category: 'all',
-    sortBy: 'date-desc'
+    sortBy: 'desc',
+    dateFrom: '',
+    dateTo: ''
   })
   const [currentPage, setCurrentPage] = useState(1)
+  const debouncedSearch = useDebounce(filters.search)
 
-  const filteredTransactions = useMemo(() => {
-    let results = [...initialTransactions]
+  const { data: categoriesData } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => categoriesService.getCategories()
+  })
 
-    if (filters.search) {
-      const query = filters.search.toLowerCase()
-      results = results.filter(
-        t =>
-          t.description.toLowerCase().includes(query) ||
-          t.category.toLowerCase().includes(query) ||
-          t.method.toLowerCase().includes(query)
-      )
-    }
+  const {
+    data: transactionsData,
+    isLoading,
+    refetch: refetchTransactions
+  } = useQuery({
+    queryKey: [
+      'transactions',
+      currentPage,
+      debouncedSearch,
+      filters.type,
+      filters.category,
+      filters.sortBy,
+      filters.dateFrom,
+      filters.dateTo
+    ],
+    queryFn: () =>
+      transactionsService.getTransactions({
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+        search: debouncedSearch,
+        type: filters.type,
+        category: filters.category,
+        sortBy: filters.sortBy,
+        dateFrom: filters.dateFrom,
+        dateTo: filters.dateTo
+      })
+  })
 
-    if (filters.type !== 'all') {
-      results = results.filter(t => t.type === filters.type)
-    }
+  const transactions = transactionsData?.transactions || []
+  const totalItems = transactionsData?.total || 0
+  const totalPages = totalItems > 0 ? Math.ceil(totalItems / ITEMS_PER_PAGE) : 1
 
-    if (filters.category !== 'all') {
-      results = results.filter(t => t.category === filters.category)
-    }
-
-    results.sort((a, b) => {
-      switch (filters.sortBy) {
-        case 'date-desc':
-          return new Date(b.date) - new Date(a.date)
-        case 'date-asc':
-          return new Date(a.date) - new Date(b.date)
-        case 'amount-desc':
-          return b.amount - a.amount
-        case 'amount-asc':
-          return a.amount - b.amount
-        case 'name-asc':
-          return a.description.localeCompare(b.description)
-        default:
-          return 0
-      }
-    })
-
-    return results
-  }, [initialTransactions, filters])
-
-  const totalPages = Math.ceil(filteredTransactions.length / ITEMS_PER_PAGE)
-  const paginatedTransactions = filteredTransactions.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  )
-
-  const summary = useMemo(() => {
-    const income = initialTransactions
-      .filter(t => t.type === 'income')
-      .reduce((acc, t) => acc + t.amount, 0)
-    const expense = initialTransactions
-      .filter(t => t.type === 'expense')
-      .reduce((acc, t) => acc + t.amount, 0)
-    const incomeCount = initialTransactions.filter(
-      t => t.type === 'income'
-    ).length
-    const expenseCount = initialTransactions.filter(
-      t => t.type === 'expense'
-    ).length
-
-    return {
-      income,
-      expense,
-      balance: income - expense,
-      incomeCount,
-      expenseCount
-    }
-  }, [initialTransactions])
+  const summary = transactionsData?.summary || {
+    income: 0,
+    expense: 0,
+    balance: 0
+  }
 
   const updateFilter = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }))
@@ -91,7 +71,9 @@ export const useTransactions = initialTransactions => {
       search: '',
       type: 'all',
       category: 'all',
-      sortBy: 'date-desc'
+      sortBy: 'desc',
+      dateFrom: '',
+      dateTo: ''
     })
     setCurrentPage(1)
   }
@@ -100,11 +82,15 @@ export const useTransactions = initialTransactions => {
     filters,
     currentPage,
     setCurrentPage,
-    filteredTransactions,
-    paginatedTransactions,
+    transactions,
+    totalItems,
     summary,
     totalPages,
     updateFilter,
-    clearFilters
+    clearFilters,
+    categoriesData,
+    transactionsData,
+    isLoading,
+    refetchTransactions
   }
 }

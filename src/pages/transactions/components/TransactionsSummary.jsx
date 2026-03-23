@@ -1,13 +1,12 @@
 import { Card, CardContent } from '@/components/ui/card'
-import {
-  TrendingUp,
-  TrendingDown,
-  ArrowUpRight,
-  ArrowDownRight,
-  CalendarDays
-} from 'lucide-react'
+import { TrendingUp, TrendingDown, CalendarDays } from 'lucide-react'
+import { TransactionsSummarySkeleton } from './TransactionsLoading'
 
-export const TransactionsSummary = ({ summary, formatCurrency }) => {
+export const TransactionsSummary = ({ summary, formatCurrency, isLoading }) => {
+  if (isLoading) {
+    return <TransactionsSummarySkeleton />
+  }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
       <Card className="bg-card border-border">
@@ -22,10 +21,6 @@ export const TransactionsSummary = ({ summary, formatCurrency }) => {
           </div>
           <div className="text-2xl font-bold text-primary">
             {formatCurrency(summary.income)}
-          </div>
-          <div className="flex items-center gap-1 text-xs text-primary mt-1">
-            <ArrowUpRight className="w-3 h-3" />
-            {summary.incomeCount} transações
           </div>
         </CardContent>
       </Card>
@@ -43,10 +38,6 @@ export const TransactionsSummary = ({ summary, formatCurrency }) => {
           <div className="text-2xl font-bold text-destructive">
             {formatCurrency(summary.expense)}
           </div>
-          <div className="flex items-center gap-1 text-xs text-destructive mt-1">
-            <ArrowDownRight className="w-3 h-3" />
-            {summary.expenseCount} transações
-          </div>
         </CardContent>
       </Card>
 
@@ -62,10 +53,6 @@ export const TransactionsSummary = ({ summary, formatCurrency }) => {
             className={`text-2xl font-bold ${summary.balance >= 0 ? 'text-primary' : 'text-destructive'}`}
           >
             {formatCurrency(summary.balance)}
-          </div>
-          <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-            <CalendarDays className="w-3 h-3" />
-            Fevereiro 2026
           </div>
         </CardContent>
       </Card>

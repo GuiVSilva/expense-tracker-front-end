@@ -95,7 +95,7 @@ export const TransactionsFilters = ({
 
         {/* Expanded Filters */}
         {showFilters && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 pt-4 border-t border-border animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 mt-4 pt-4 border-t border-border animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="space-y-2">
               <Label className="text-sm text-muted-foreground">Categoria</Label>
               <Select
@@ -117,6 +117,26 @@ export const TransactionsFilters = ({
             </div>
 
             <div className="space-y-2">
+              <Label className="text-sm text-muted-foreground">Data inicial</Label>
+              <Input
+                type="date"
+                value={filters.dateFrom}
+                onChange={event => onFilterChange('dateFrom', event.target.value)}
+                className="bg-secondary border-border"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-sm text-muted-foreground">Data final</Label>
+              <Input
+                type="date"
+                value={filters.dateTo}
+                onChange={event => onFilterChange('dateTo', event.target.value)}
+                className="bg-secondary border-border"
+              />
+            </div>
+
+            <div className="space-y-2">
               <Label className="text-sm text-muted-foreground">
                 Ordenar por
               </Label>
@@ -128,11 +148,8 @@ export const TransactionsFilters = ({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="date-desc">Data (mais recente)</SelectItem>
-                  <SelectItem value="date-asc">Data (mais antiga)</SelectItem>
-                  <SelectItem value="amount-desc">Valor (maior)</SelectItem>
-                  <SelectItem value="amount-asc">Valor (menor)</SelectItem>
-                  <SelectItem value="name-asc">Nome (A-Z)</SelectItem>
+                  <SelectItem value="desc">Data (mais recente)</SelectItem>
+                  <SelectItem value="asc">Data (mais antiga)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

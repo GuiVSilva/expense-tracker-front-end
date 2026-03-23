@@ -24,8 +24,9 @@ import { transactionSchema } from '../schemas/transactionSchema'
 import { toast } from 'sonner'
 import { useState } from 'react'
 import { transactionsService } from '@/services/transactions'
+import { paymentMethodOptions } from '@/lib/payment-methods'
 
-export const NewTransactionModal = ({ open, onOpenChange, categories }) => {
+export const NewTransactionModal = ({ open, onClose, categories }) => {
   const {
     register,
     handleSubmit,
@@ -42,13 +43,6 @@ export const NewTransactionModal = ({ open, onOpenChange, categories }) => {
   const transactionType = watch('type')
   if (!open) return null
 
-  const handleClose = nextOpen => {
-    onOpenChange(nextOpen)
-    if (!nextOpen) {
-      reset(getInitialTransactionForm())
-    }
-  }
-
   const handleNewTransaction = async data => {
     setIsLoading(true)
     try {
@@ -62,7 +56,7 @@ export const NewTransactionModal = ({ open, onOpenChange, categories }) => {
       })
       toast.success('Transação criada com sucesso!')
       reset(getInitialTransactionForm())
-      onOpenChange(false)
+      onClose()
     } catch (error) {
       toast.error(error.response?.data?.message || 'Erro inesperado')
     } finally {
@@ -71,7 +65,7 @@ export const NewTransactionModal = ({ open, onOpenChange, categories }) => {
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg bg-card border-border">
         <DialogHeader>
           <DialogTitle className="text-foreground">Nova Transação</DialogTitle>
@@ -201,16 +195,11 @@ export const NewTransactionModal = ({ open, onOpenChange, categories }) => {
                         <SelectValue placeholder="Selecione" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="pix">PIX</SelectItem>
-                        <SelectItem value="credit_card">
-                          Cartão Crédito
-                        </SelectItem>
-                        <SelectItem value="debit_card">
-                          Cartão Débito
-                        </SelectItem>
-                        <SelectItem value="transfer">Transferência</SelectItem>
-                        <SelectItem value="ticket">Boleto</SelectItem>
-                        <SelectItem value="money">Dinheiro</SelectItem>
+                        {paymentMethodOptions.map(method => (
+                          <SelectItem key={method.value} value={method.value}>
+                            {method.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   )}
@@ -228,8 +217,9 @@ export const NewTransactionModal = ({ open, onOpenChange, categories }) => {
             <Button
               type="button"
               variant="outline"
-              onClick={() => handleClose(false)}
+              onClick={() => onClose()}
               className="bg-transparent"
+              loading={isLoading}
             >
               Cancelar
             </Button>

@@ -1,69 +1,50 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
+import { formatCurrency, formatDate } from '@/lib/formatters'
 import { Plus } from 'lucide-react'
-import { categoriesService } from '@/services/categories'
 import { useTransactions } from './hooks/useTransactions'
 import { TransactionsFilters } from './components/TransactionsFilters'
 import { TransactionsSummary } from './components/TransactionsSummary'
 import { TransactionsList } from './components/TransactionsList'
-import { TransactionsPagination } from './components/TransactionsPagination'
-import { TransactionModals } from './components/TransactionModals'
-
-const allTransactions = [
-  {
-    id: 1,
-    description: 'Salario',
-    category: 'Renda',
-    amount: 5500.0,
-    type: 'income',
-    date: '2026-02-01',
-    method: 'Transferencia'
-  },
-  {
-    id: 2,
-    description: 'Supermercado Extra',
-    category: 'Alimentacao',
-    amount: 450.0,
-    type: 'expense',
-    date: '2026-02-02',
-    method: 'Cartao Credito'
-  }
-]
+import { NewTransactionModal } from './components/NewTransactionModal'
+import { DeleteTransactionModal } from './components/DeleteTransactionModal'
 
 export const Transactions = () => {
-  const [newTransactionOpen, setNewTransactionOpen] = useState(false)
-  const [detailTransaction, setDetailTransaction] = useState(null)
-  const [deleteConfirm, setDeleteConfirm] = useState(null)
-
   const {
     filters,
     currentPage,
     setCurrentPage,
-    filteredTransactions,
-    paginatedTransactions,
+    transactions,
+    totalItems,
     summary,
     totalPages,
     updateFilter,
-    clearFilters
-  } = useTransactions(allTransactions)
+    clearFilters,
+    categoriesData,
+    isLoading,
+    refetchTransactions
+  } = useTransactions()
 
-  const { data: categoriesData } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => categoriesService.getCategories()
-  })
+  const [openDialogTransaction, setOpenDialogTransaction] = useState(false)
+  const [openDialogDelete, setOpenDialogDelete] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState(null)
 
-  const formatCurrency = value =>
-    new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value)
+  const handleOpenDialogNewTrasaction = () => setOpenDialogTransaction(true)
 
-  const formatDateShort = dateString =>
-    new Date(dateString).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: 'short'
-    })
+  const handleCloseDialogNewTransaction = () => {
+    setOpenDialogTransaction(false)
+    refetchTransactions()
+  }
+
+  const handleOpenDialogDelete = transactions => {
+    setDeleteConfirm(transactions)
+    setOpenDialogDelete(true)
+  }
+
+  const handleCloseDialogDelete = () => {
+    setOpenDialogDelete(false)
+    refetchTransactions()
+  }
 
   return (
     <>
@@ -77,14 +58,18 @@ export const Transactions = () => {
 
         <Button
           className="bg-primary hover:bg-primary/90 text-primary-foreground"
-          onClick={() => setNewTransactionOpen(true)}
+          onClick={() => handleOpenDialogNewTrasaction()}
         >
           <Plus className="w-5 h-5 mr-2" />
           <span className="hidden sm:inline">Nova Transação</span>
         </Button>
       </div>
 
-      <TransactionsSummary summary={summary} formatCurrency={formatCurrency} />
+      <TransactionsSummary
+        summary={summary}
+        formatCurrency={formatCurrency}
+        isLoading={isLoading}
+      />
 
       <TransactionsFilters
         filters={filters}
@@ -95,37 +80,34 @@ export const Transactions = () => {
 
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-muted-foreground">
-          {filteredTransactions.length} transação
-          {filteredTransactions.length !== 1 ? 'es' : ''} encontrada
-          {filteredTransactions.length !== 1 ? 's' : ''}
+          {totalItems} transação
+          {totalItems !== 1 ? 'es' : ''} encontrada
+          {totalItems !== 1 ? 's' : ''}
         </p>
       </div>
 
       <TransactionsList
-        transactions={paginatedTransactions}
+        transactions={transactions}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        isLoading={isLoading}
         formatCurrency={formatCurrency}
-        formatDateShort={formatDateShort}
-        onViewDetails={setDetailTransaction}
-        onDelete={setDeleteConfirm}
+        formatDateShort={formatDate}
+        handleOpenDialogDelete={handleOpenDialogDelete}
+        onPageChange={setCurrentPage}
         onClearFilters={clearFilters}
       />
 
-      <TransactionsPagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
+      <NewTransactionModal
+        open={openDialogTransaction}
+        onClose={handleCloseDialogNewTransaction}
+        categories={categoriesData}
       />
 
-      <TransactionModals
-        newTransactionOpen={newTransactionOpen}
-        setNewTransactionOpen={setNewTransactionOpen}
-        detailTransaction={detailTransaction}
-        setDetailTransaction={setDetailTransaction}
-        deleteConfirm={deleteConfirm}
-        setDeleteConfirm={setDeleteConfirm}
-        categories={categoriesData}
-        formatCurrency={formatCurrency}
-        formatDate={formatDateShort}
+      <DeleteTransactionModal
+        open={openDialogDelete}
+        onClose={handleCloseDialogDelete}
+        line={deleteConfirm}
       />
     </>
   )
