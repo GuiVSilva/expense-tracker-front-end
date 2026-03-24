@@ -16,7 +16,8 @@ export const TransactionsFilters = ({
   filters,
   categories,
   onFilterChange,
-  onClearFilters
+  onClearFilters,
+  handleOpenDialogExport
 }) => {
   const [showFilters, setShowFilters] = useState(false)
 
@@ -86,6 +87,7 @@ export const TransactionsFilters = ({
               variant="outline"
               size="sm"
               className="hidden sm:flex bg-transparent"
+              onClick={handleOpenDialogExport}
             >
               <Download className="w-4 h-4 mr-2" />
               Exportar
@@ -117,17 +119,23 @@ export const TransactionsFilters = ({
             </div>
 
             <div className="space-y-2">
-              <Label className="text-sm text-muted-foreground">Data inicial</Label>
+              <Label className="text-sm text-muted-foreground">
+                Data inicial
+              </Label>
               <Input
                 type="date"
                 value={filters.dateFrom}
-                onChange={event => onFilterChange('dateFrom', event.target.value)}
+                onChange={event =>
+                  onFilterChange('dateFrom', event.target.value)
+                }
                 className="bg-secondary border-border"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-sm text-muted-foreground">Data final</Label>
+              <Label className="text-sm text-muted-foreground">
+                Data final
+              </Label>
               <Input
                 type="date"
                 value={filters.dateTo}

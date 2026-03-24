@@ -8,6 +8,7 @@ import { TransactionsSummary } from './components/TransactionsSummary'
 import { TransactionsList } from './components/TransactionsList'
 import { NewTransactionModal } from './components/NewTransactionModal'
 import { DeleteTransactionModal } from './components/DeleteTransactionModal'
+import { ExportTransactionsModal } from './components/ExportTransactionsModal'
 
 export const Transactions = () => {
   const {
@@ -27,6 +28,7 @@ export const Transactions = () => {
 
   const [openDialogTransaction, setOpenDialogTransaction] = useState(false)
   const [openDialogDelete, setOpenDialogDelete] = useState(false)
+  const [openDialogExport, setOpenDialogExport] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState(null)
 
   const handleOpenDialogNewTrasaction = () => setOpenDialogTransaction(true)
@@ -45,6 +47,10 @@ export const Transactions = () => {
     setOpenDialogDelete(false)
     refetchTransactions()
   }
+
+  const handleOpenDialogExport = () => setOpenDialogExport(true)
+
+  const handleCloseDialogExport = () => setOpenDialogExport(false)
 
   return (
     <>
@@ -76,6 +82,7 @@ export const Transactions = () => {
         categories={categoriesData}
         onFilterChange={updateFilter}
         onClearFilters={clearFilters}
+        handleOpenDialogExport={handleOpenDialogExport}
       />
 
       <div className="flex items-center justify-between mb-4">
@@ -108,6 +115,12 @@ export const Transactions = () => {
         open={openDialogDelete}
         onClose={handleCloseDialogDelete}
         line={deleteConfirm}
+      />
+
+      <ExportTransactionsModal
+        open={openDialogExport}
+        onClose={handleCloseDialogExport}
+        categories={categoriesData}
       />
     </>
   )

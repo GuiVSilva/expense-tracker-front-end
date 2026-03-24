@@ -51,6 +51,17 @@ export class TransactionsService {
     })
     return response.data
   }
+
+  async exportTransactions({ category, dateFrom, dateTo }) {
+    const response = await api.get('/transactions/export', {
+      params: {
+        category,
+        dateFrom,
+        dateTo
+      }
+    })
+    return response.data
+  }
 }
 
 export const transactionsService = new TransactionsService()
