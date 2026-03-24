@@ -22,11 +22,12 @@ import { TrendingUp, TrendingDown, Plus } from 'lucide-react'
 import { getInitialTransactionForm } from '../constants/transactionForm'
 import { transactionSchema } from '../schemas/transactionSchema'
 import { toast } from 'sonner'
-import { useState } from 'react'
 import { transactionsService } from '@/services/transactions'
 import { paymentMethodOptions } from '@/lib/payment-methods'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export const NewTransactionModal = ({ open, onClose, categories }) => {
+  const queryClient = useQueryClient()
   const {
     register,
     handleSubmit,
@@ -38,30 +39,31 @@ export const NewTransactionModal = ({ open, onClose, categories }) => {
     resolver: zodResolver(transactionSchema),
     defaultValues: getInitialTransactionForm()
   })
-  const [isLoading, setIsLoading] = useState(false)
+  const { mutate: createTransaction, isPending: isLoading } = useMutation({
+    mutationFn: data => transactionsService.createTransaction(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      toast.success('Transação criada com sucesso!')
+      reset(getInitialTransactionForm())
+      onClose()
+    },
+    onError: error => {
+      toast.error(error.response?.data?.message || 'Erro inesperado')
+    }
+  })
 
   const transactionType = watch('type')
   if (!open) return null
 
-  const handleNewTransaction = async data => {
-    setIsLoading(true)
-    try {
-      await transactionsService.createTransaction({
-        description: data.description,
-        category: data.category,
-        amount: data.amount,
-        type: data.type,
-        date: data.date,
-        method: data.method
-      })
-      toast.success('Transação criada com sucesso!')
-      reset(getInitialTransactionForm())
-      onClose()
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Erro inesperado')
-    } finally {
-      setIsLoading(false)
-    }
+  const handleNewTransaction = data => {
+    createTransaction({
+      description: data.description,
+      category: data.category,
+      amount: data.amount,
+      type: data.type,
+      date: data.date,
+      method: data.method
+    })
   }
 
   return (

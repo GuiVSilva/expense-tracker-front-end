@@ -1,10 +1,12 @@
-import { categoriesService } from '@/services/categories'
-import { transactionsService } from '@/services/transactions'
+import { categoriesQueryOptions } from '@/queries/categories'
 import { useDebounce } from '@/hooks/useDebounce'
-import { useQuery } from '@tanstack/react-query'
+import { transactionsService } from '@/services/transactions'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
 const ITEMS_PER_PAGE = 8
+const TRANSACTIONS_STALE_TIME = 1000 * 60
+const TRANSACTIONS_GC_TIME = 1000 * 60 * 10
 
 export const useTransactions = () => {
   const [filters, setFilters] = useState({
@@ -18,15 +20,12 @@ export const useTransactions = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const debouncedSearch = useDebounce(filters.search)
 
-  const { data: categoriesData } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => categoriesService.getCategories()
-  })
+  const { data: categoriesData } = useQuery(categoriesQueryOptions)
 
   const {
     data: transactionsData,
-    isLoading,
-    refetch: refetchTransactions
+    refetch: refetchTransactions,
+    isLoading
   } = useQuery({
     queryKey: [
       'transactions',
@@ -48,7 +47,10 @@ export const useTransactions = () => {
         sortBy: filters.sortBy,
         dateFrom: filters.dateFrom,
         dateTo: filters.dateTo
-      })
+      }),
+    staleTime: TRANSACTIONS_STALE_TIME,
+    gcTime: TRANSACTIONS_GC_TIME,
+    placeholderData: keepPreviousData
   })
 
   const transactions = transactionsData?.transactions || []

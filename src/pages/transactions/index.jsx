@@ -35,7 +35,6 @@ export const Transactions = () => {
 
   const handleCloseDialogNewTransaction = () => {
     setOpenDialogTransaction(false)
-    refetchTransactions()
   }
 
   const handleOpenDialogDelete = transactions => {

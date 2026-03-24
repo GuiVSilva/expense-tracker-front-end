@@ -8,26 +8,26 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 import { transactionsService } from '@/services/transactions'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Trash2 } from 'lucide-react'
-import { useState } from 'react'
 import { toast } from 'sonner'
 
 export const DeleteTransactionModal = ({ open, onClose, line }) => {
-  const [isLoading, setIsloading] = useState(false)
-  if (!open) return null
+  const queryClient = useQueryClient()
 
-  const handleSubmit = async () => {
-    setIsloading(true)
-    try {
-      await transactionsService.deleteTransaction({ id: line.id })
-      toast.success('Transação excluída com sucesso!')
+  const { mutate: deleteTransaction, isPending: isLoading } = useMutation({
+    mutationFn: () => transactionsService.deleteTransaction({ id: line.id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      toast.success('Transação excluida com sucesso!')
       onClose()
-    } catch (error) {
+    },
+    onError: error => {
       toast.error(error?.response?.data?.message || 'Erro inesperado')
-    } finally {
-      setIsloading(false)
     }
-  }
+  })
+
+  if (!open) return null
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -52,7 +52,7 @@ export const DeleteTransactionModal = ({ open, onClose, line }) => {
           </Button>
           <Button
             className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-            onClick={handleSubmit}
+            onClick={() => deleteTransaction()}
             loading={isLoading}
           >
             <Trash2 className="w-4 h-4 mr-2" />

@@ -162,7 +162,7 @@ export const TransactionsList = ({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem
-                            className="text-destructive"
+                            variant="destructive"
                             onClick={e => {
                               e.stopPropagation()
                               handleOpenDialogDelete(transaction)
