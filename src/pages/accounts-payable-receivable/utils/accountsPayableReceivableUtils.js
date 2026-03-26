@@ -74,9 +74,7 @@ export const initialAccounts = [
     status: 'partial',
     installmentIndex: 1,
     installmentTotal: 1,
-    payments: [
-      { id: 'p-2', amount: 700, method: 'pix', date: '2026-02-19' }
-    ]
+    payments: [{ id: 'p-2', amount: 700, method: 'pix', date: '2026-02-19' }]
   },
   {
     id: 5,
@@ -102,22 +100,9 @@ export const initialAccounts = [
     status: 'paid',
     installmentIndex: 1,
     installmentTotal: 1,
-    payments: [
-      { id: 'p-3', amount: 2500, method: 'cash', date: '2026-02-15' }
-    ]
+    payments: [{ id: 'p-3', amount: 2500, method: 'cash', date: '2026-02-15' }]
   }
 ]
-
-export const defaultForm = {
-  description: '',
-  type: 'payable',
-  category: '',
-  amount: '',
-  dueDate: new Date().toISOString().split('T')[0],
-  status: 'pending',
-  installments: 1,
-  splitInstallments: true
-}
 
 export const formatCurrency = value =>
   new Intl.NumberFormat('pt-BR', {
@@ -145,10 +130,22 @@ export const getTypeMeta = type =>
 
 export const getStatusMeta = status => {
   const map = {
-    pending: { label: 'Pendente', className: 'bg-amber-500/15 text-amber-700 dark:text-amber-300' },
-    paid: { label: 'Pago', className: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300' },
-    overdue: { label: 'Atrasado', className: 'bg-destructive/15 text-destructive' },
-    partial: { label: 'Parcial', className: 'bg-blue-500/15 text-blue-700 dark:text-blue-300' }
+    pending: {
+      label: 'Pendente',
+      className: 'bg-amber-500/15 text-amber-700 dark:text-amber-300'
+    },
+    paid: {
+      label: 'Pago',
+      className: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300'
+    },
+    overdue: {
+      label: 'Atrasado',
+      className: 'bg-destructive/15 text-destructive'
+    },
+    partial: {
+      label: 'Parcial',
+      className: 'bg-blue-500/15 text-blue-700 dark:text-blue-300'
+    }
   }
 
   return map[status] || map.pending
@@ -159,10 +156,11 @@ export const calculateOpenAmount = account => {
   return Math.max(Number(account.amount) - Number(account.paidAmount || 0), 0)
 }
 
-export const canEditAmount = status => ['pending', 'partial', 'overdue'].includes(status)
-
 export const sumPayments = account =>
-  (account.payments || []).reduce((total, payment) => total + Number(payment.amount || 0), 0)
+  (account.payments || []).reduce(
+    (total, payment) => total + Number(payment.amount || 0),
+    0
+  )
 
 export const resolveStatusByPayment = (dueDate, paidAmount, totalAmount) => {
   if (paidAmount >= totalAmount) return 'paid'
@@ -173,63 +171,4 @@ export const resolveStatusByPayment = (dueDate, paidAmount, totalAmount) => {
   const due = new Date(dueDate)
   due.setHours(0, 0, 0, 0)
   return due < today ? 'overdue' : 'pending'
-}
-
-const toDateOnly = date => date.toISOString().split('T')[0]
-
-const addMonths = (dateString, monthOffset) => {
-  const date = new Date(dateString)
-  const sourceDay = date.getDate()
-  date.setMonth(date.getMonth() + monthOffset)
-  if (date.getDate() < sourceDay) {
-    date.setDate(0)
-  }
-  return toDateOnly(date)
-}
-
-const splitInstallmentsAmount = (totalAmount, installments) => {
-  const base = Math.floor((totalAmount / installments) * 100) / 100
-  let remainder = Math.round((totalAmount - base * installments) * 100)
-
-  return Array.from({ length: installments }, (_, index) => {
-    const extra = remainder > 0 ? 0.01 : 0
-    if (remainder > 0) remainder -= 1
-    return Number((base + extra).toFixed(2))
-  })
-}
-
-export const buildInstallmentAccounts = formData => {
-  const installments = Math.max(Number(formData.installments) || 1, 1)
-  const fullAmount = Number(formData.amount)
-  const amounts = formData.splitInstallments
-    ? splitInstallmentsAmount(fullAmount, installments)
-    : Array.from({ length: installments }, () => fullAmount)
-
-  const base = {
-    description: formData.description.trim(),
-    type: formData.type,
-    category: formData.category.trim(),
-    status: formData.status
-  }
-
-  return amounts.map((amount, index) => ({
-    ...base,
-    id: Date.now() + index,
-    amount,
-    paidAmount: formData.status === 'paid' ? amount : 0,
-    payments:
-      formData.status === 'paid'
-        ? [
-            {
-              id: `p-${Date.now()}-${index}`,
-              amount,
-              method: 'transfer',
-              date: toDateOnly(new Date())
-            }
-          ]
-        : [],
-    dueDate: addMonths(formData.dueDate, index),
-    installmentIndex: index + 1,
-    installmentTotal: installments
-  }))
 }
