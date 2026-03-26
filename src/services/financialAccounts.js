@@ -24,6 +24,20 @@ export class FinancialAccountsService {
 
     return response.data
   }
+
+  async getAccounts({ page, limit, search, type, status, category }) {
+    const response = await api.get('/financial-accounts/', {
+      params: {
+        page,
+        limit,
+        search,
+        type,
+        status,
+        category
+      }
+    })
+    return response.data
+  }
 }
 
 export const financialAccountsService = new FinancialAccountsService()

@@ -11,10 +11,14 @@ import { AccountsRegisterModal } from './components/AccountsRegisterModal'
 export const AccountsPayableReceivable = () => {
   const {
     accounts,
-    allCount,
     filters,
     setFilter,
     clearFilters,
+    totalPages,
+    currentPage,
+    setCurrentPage,
+    isLoading,
+    refechAccounts,
     categories,
     summary
   } = useAccountsPayableReceivable()
@@ -52,16 +56,21 @@ export const AccountsPayableReceivable = () => {
         onClearFilters={clearFilters}
       />
 
-      <div className="text-sm text-muted-foreground">
-        {accounts.length} de {allCount} contas exibidas
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-sm text-muted-foreground">
+          {accounts.length} contas
+          {accounts.length !== 1 ? 'es' : ''} encontrada
+          {accounts.length !== 1 ? 's' : ''}
+        </p>
       </div>
 
       <AccountsTable
         accounts={accounts}
-        // onPay={openPaymentModal}
-        // onViewDetails={openDetailsModal}
-        // onEdit={openEditModal}
-        // onDelete={setDeleteAccount}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+        totalPages={totalPages}
+        isLoading={isLoading}
+        onClearFilters={clearFilters}
       />
 
       <AccountsRegisterModal

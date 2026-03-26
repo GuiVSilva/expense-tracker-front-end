@@ -6,10 +6,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import {
-  accountTypeOptions,
-  statusOptions
-} from '../utils/accountsPayableReceivableUtils'
+
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import {
@@ -25,11 +22,14 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { initialValuesForm } from '../constansts/accountForm'
 import { validationSchema } from '../schemas/accountSchema'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { financialAccountsService } from '@/services/financialAccounts'
 import { toast } from 'sonner'
+import { accountTypeOptions, statusOptions } from '@/lib/account-meta'
 
 export const AccountsRegisterModal = ({ open, onClose, categories }) => {
+  const queryClient = useQueryClient()
+
   const {
     register,
     handleSubmit,
@@ -44,6 +44,7 @@ export const AccountsRegisterModal = ({ open, onClose, categories }) => {
   const { mutate: createAccount, isPending: isLoading } = useMutation({
     mutationFn: data => financialAccountsService.createAccount(data),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['financial-accounts'] })
       toast.success('Conta criada com sucesso!')
       reset(initialValuesForm)
       onClose()

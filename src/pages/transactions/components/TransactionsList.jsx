@@ -30,8 +30,8 @@ import {
   MoreVertical,
   Trash2
 } from 'lucide-react'
+import { getCategoryColor, getCategoryIcon } from '@/lib/category-meta'
 import { formatPaymentMethod } from '@/lib/payment-methods'
-import { categoryColors, getCategoryIcon } from '../utils/categoryUtils'
 import { TransactionsTableSkeleton } from './TransactionsLoading'
 
 export const TransactionsList = ({
@@ -72,115 +72,113 @@ export const TransactionsList = ({
 
   return (
     <>
-      <Card className="bg-card border-border hidden md:block">
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-border hover:bg-transparent">
-                <TableHead className="text-muted-foreground pl-6">
-                  Descrição
-                </TableHead>
-                <TableHead className="text-muted-foreground">
-                  Categoria
-                </TableHead>
-                <TableHead className="text-muted-foreground">Data</TableHead>
-                <TableHead className="text-muted-foreground">Método</TableHead>
-                <TableHead className="text-muted-foreground text-right">
-                  Valor
-                </TableHead>
-                <TableHead className="text-muted-foreground text-right pr-6">
-                  Ações
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {transactions.map(transaction => {
-                const CatIcon = getCategoryIcon(transaction.category.name)
-                return (
-                  <TableRow
-                    key={transaction.id}
-                    className="border-border group hover:bg-secondary/50"
-                  >
-                    <TableCell className="pl-6">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
-                            transaction.type === 'INCOME'
-                              ? 'bg-primary/10'
-                              : 'bg-destructive/10'
-                          }`}
-                        >
-                          {transaction.type === 'INCOME' ? (
-                            <ArrowUpRight className="w-4 h-4 text-primary" />
-                          ) : (
-                            <ArrowDownRight className="w-4 h-4 text-destructive" />
-                          )}
-                        </div>
-                        <div>
-                          <div className="font-medium text-foreground">
-                            {transaction.description}
-                          </div>
+      <div className="rounded-lg border border-border bg-card">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-border hover:bg-transparent">
+              <TableHead className="text-muted-foreground pl-6">
+                Descrição
+              </TableHead>
+              <TableHead className="text-muted-foreground">Categoria</TableHead>
+              <TableHead className="text-muted-foreground">Data</TableHead>
+              <TableHead className="text-muted-foreground">Método</TableHead>
+              <TableHead className="text-muted-foreground text-right">
+                Valor
+              </TableHead>
+              <TableHead className="text-muted-foreground text-right pr-6">
+                Ações
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {transactions.map(transaction => {
+              const categoryName =
+                transaction.category?.name || transaction.category
+              const CatIcon = getCategoryIcon(categoryName)
+              return (
+                <TableRow
+                  key={transaction.id}
+                  className="border-border group hover:bg-secondary/50"
+                >
+                  <TableCell className="pl-6">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                          transaction.type === 'INCOME'
+                            ? 'bg-primary/10'
+                            : 'bg-destructive/10'
+                        }`}
+                      >
+                        {transaction.type === 'INCOME' ? (
+                          <ArrowUpRight className="w-4 h-4 text-primary" />
+                        ) : (
+                          <ArrowDownRight className="w-4 h-4 text-destructive" />
+                        )}
+                      </div>
+                      <div>
+                        <div className="font-medium text-foreground">
+                          {transaction.description}
                         </div>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={`font-normal ${categoryColors[transaction.category.name] || 'bg-secondary text-foreground border-border'}`}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant="outline"
+                      className={`font-normal ${getCategoryColor(categoryName)}`}
+                    >
+                      <CatIcon className="w-3 h-3 mr-1" />
+                      {categoryName}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDateShort(transaction.date)}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground text-sm">
+                    {formatPaymentMethod(transaction.method)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <span
+                      className={`font-semibold ${transaction.type === 'INCOME' ? 'text-primary' : 'text-destructive'}`}
+                    >
+                      {transaction.type === 'INCOME' ? '+' : '-'}
+                      {formatCurrency(transaction.amount)}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-right pr-6">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        asChild
+                        onClick={e => e.stopPropagation()}
                       >
-                        <CatIcon className="w-3 h-3 mr-1" />
-                        {transaction.category.name}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {formatDateShort(transaction.date)}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-sm">
-                      {formatPaymentMethod(transaction.method)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <span
-                        className={`font-semibold ${transaction.type === 'INCOME' ? 'text-primary' : 'text-destructive'}`}
-                      >
-                        {transaction.type === 'INCOME' ? '+' : '-'}
-                        {formatCurrency(transaction.amount)}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-right pr-6">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger
-                          asChild
-                          onClick={e => e.stopPropagation()}
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          className="h-8 w-8"
                         >
-                          <Button
-                            variant="secondary"
-                            size="icon"
-                            className="h-8 w-8"
-                          >
-                            <MoreVertical className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            variant="destructive"
-                            onClick={e => {
-                              e.stopPropagation()
-                              handleOpenDialogDelete(transaction)
-                            }}
-                          >
-                            <Trash2 className="w-4 h-4 mr-2" />
-                            Excluir
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+                          <MoreVertical className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onClick={e => {
+                            e.stopPropagation()
+                            handleOpenDialogDelete(transaction)
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Excluir
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
 
       <Pagination className="mt-6">
         <PaginationContent>

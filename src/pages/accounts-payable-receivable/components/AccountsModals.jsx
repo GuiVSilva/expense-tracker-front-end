@@ -19,15 +19,13 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { Plus, Trash2 } from 'lucide-react'
+import { calculateOpenAmount } from '../utils/accountsPayableReceivableUtils'
 import {
-  accountTypeOptions,
-  calculateOpenAmount,
-  formatCurrency,
-  formatDate,
-  formatMethod,
-  paymentMethodOptions,
-  statusOptions
-} from '../utils/accountsPayableReceivableUtils'
+  formatPaymentMethod,
+  paymentMethodOptions
+} from '@/lib/payment-methods'
+import { formatCurrency, formatDate } from '@/lib/formatters'
+import { accountTypeOptions, statusOptions } from '@/lib/account-meta'
 
 export const AccountsModals = ({
   formOpen,
@@ -55,12 +53,16 @@ export const AccountsModals = ({
     Number(formData.amount) > 0 &&
     Boolean(formData.dueDate)
 
-  const paymentEntriesValid = paymentEntries.some(entry => Number(entry.amount) > 0)
+  const paymentEntriesValid = paymentEntries.some(
+    entry => Number(entry.amount) > 0
+  )
   const paymentTotal = paymentEntries.reduce(
     (sum, entry) => sum + (Number(entry.amount) > 0 ? Number(entry.amount) : 0),
     0
   )
-  const paymentOpenAmount = paymentAccount ? calculateOpenAmount(paymentAccount) : 0
+  const paymentOpenAmount = paymentAccount
+    ? calculateOpenAmount(paymentAccount)
+    : 0
   const exceedsOpenAmount = paymentTotal > paymentOpenAmount
 
   return (
@@ -89,7 +91,10 @@ export const AccountsModals = ({
               <Input
                 value={formData.description}
                 onChange={e =>
-                  setFormData(prev => ({ ...prev, description: e.target.value }))
+                  setFormData(prev => ({
+                    ...prev,
+                    description: e.target.value
+                  }))
                 }
                 placeholder="Ex: Parcela cliente XPTO"
                 className="bg-secondary border-border"
@@ -224,8 +229,8 @@ export const AccountsModals = ({
                     Diluir valor entre parcelas
                   </Label>
                   <p className="text-xs text-muted-foreground">
-                    Marcado: valor informado sera dividido entre as parcelas. Desmarcado:
-                    cada parcela tera o valor cheio.
+                    Marcado: valor informado sera dividido entre as parcelas.
+                    Desmarcado: cada parcela tera o valor cheio.
                   </p>
                 </div>
               </div>
@@ -239,7 +244,11 @@ export const AccountsModals = ({
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={onCloseForm} className="bg-transparent">
+            <Button
+              variant="outline"
+              onClick={onCloseForm}
+              className="bg-transparent"
+            >
               Cancelar
             </Button>
             <Button onClick={onSave} disabled={!isValid}>
@@ -259,8 +268,8 @@ export const AccountsModals = ({
           <DialogHeader>
             <DialogTitle>Registrar pagamento</DialogTitle>
             <DialogDescription>
-              Informe o valor pago e o metodo. Voce pode registrar mais de uma forma
-              no mesmo lancamento.
+              Informe o valor pago e o metodo. Voce pode registrar mais de uma
+              forma no mesmo lancamento.
             </DialogDescription>
           </DialogHeader>
 
@@ -271,7 +280,8 @@ export const AccountsModals = ({
                   {paymentAccount.description}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Em aberto: {formatCurrency(calculateOpenAmount(paymentAccount))}
+                  Em aberto:{' '}
+                  {formatCurrency(calculateOpenAmount(paymentAccount))}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Total informado: {formatCurrency(paymentTotal)}
@@ -327,20 +337,29 @@ export const AccountsModals = ({
                 ))}
               </div>
 
-              <Button variant="outline" onClick={onAddPaymentRow} className="bg-transparent">
+              <Button
+                variant="outline"
+                onClick={onAddPaymentRow}
+                className="bg-transparent"
+              >
                 <Plus className="w-4 h-4 mr-2" />
                 Adicionar forma de pagamento
               </Button>
               {exceedsOpenAmount && (
                 <p className="text-xs text-amber-700 dark:text-amber-300">
-                  O valor informado ultrapassa o total em aberto. Ajuste os valores.
+                  O valor informado ultrapassa o total em aberto. Ajuste os
+                  valores.
                 </p>
               )}
             </div>
           )}
 
           <DialogFooter>
-            <Button variant="outline" onClick={onClosePayment} className="bg-transparent">
+            <Button
+              variant="outline"
+              onClick={onClosePayment}
+              className="bg-transparent"
+            >
               Cancelar
             </Button>
             <Button
@@ -398,7 +417,7 @@ export const AccountsModals = ({
                         </p>
                       </div>
                       <Badge className="bg-primary/10 text-primary">
-                        {formatMethod(payment.method)}
+                        {formatPaymentMethod(payment.method)}
                       </Badge>
                     </div>
                   ))
@@ -412,7 +431,11 @@ export const AccountsModals = ({
           )}
 
           <DialogFooter>
-            <Button variant="outline" onClick={onCloseDetails} className="bg-transparent">
+            <Button
+              variant="outline"
+              onClick={onCloseDetails}
+              className="bg-transparent"
+            >
               Fechar
             </Button>
           </DialogFooter>
@@ -437,7 +460,11 @@ export const AccountsModals = ({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={onCancelDelete} className="bg-transparent">
+            <Button
+              variant="outline"
+              onClick={onCancelDelete}
+              className="bg-transparent"
+            >
               Cancelar
             </Button>
             <Button variant="destructive" onClick={onConfirmDelete}>

@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card'
+import { formatCurrency } from '@/lib/formatters'
 import { CalendarClock, CircleAlert, HandCoins, Landmark } from 'lucide-react'
-import { formatCurrency } from '../utils/accountsPayableReceivableUtils'
 
 export const AccountsSummaryCards = ({ summary }) => {
   const cards = [
@@ -55,13 +55,21 @@ export const AccountsSummaryCards = ({ summary }) => {
           <Card key={card.id} className="bg-card border-border">
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-muted-foreground">{card.label}</span>
-                <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${card.iconWrap}`}>
+                <span className="text-sm text-muted-foreground">
+                  {card.label}
+                </span>
+                <div
+                  className={`w-9 h-9 rounded-lg flex items-center justify-center ${card.iconWrap}`}
+                >
                   <Icon className={`w-4 h-4 ${card.iconClass}`} />
                 </div>
               </div>
-              <div className={`text-2xl font-bold ${card.valueClass}`}>{card.value}</div>
-              <div className="text-xs text-muted-foreground mt-1">{card.helper}</div>
+              <div className={`text-2xl font-bold ${card.valueClass}`}>
+                {card.value}
+              </div>
+              <div className="text-xs text-muted-foreground mt-1">
+                {card.helper}
+              </div>
             </CardContent>
           </Card>
         )

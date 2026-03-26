@@ -4,7 +4,7 @@ import { transactionsService } from '@/services/transactions'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
-const ITEMS_PER_PAGE = 8
+const ITEMS_PER_PAGE = 5
 const TRANSACTIONS_STALE_TIME = 1000 * 60
 const TRANSACTIONS_GC_TIME = 1000 * 60 * 10
 

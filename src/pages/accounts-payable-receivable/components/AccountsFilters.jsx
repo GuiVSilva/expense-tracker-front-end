@@ -8,11 +8,8 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { accountTypeOptions, statusOptions } from '@/lib/account-meta'
 import { FilterX, Search } from 'lucide-react'
-import {
-  accountTypeOptions,
-  statusOptions
-} from '../utils/accountsPayableReceivableUtils'
 
 export const AccountsFilters = ({
   filters,
