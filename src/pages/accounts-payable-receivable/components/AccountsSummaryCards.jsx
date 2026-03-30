@@ -1,8 +1,13 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { formatCurrency } from '@/lib/formatters'
 import { CalendarClock, CircleAlert, HandCoins, Landmark } from 'lucide-react'
+import { AccountsSummaryCardsSkeleton } from './AccountsLoading'
 
-export const AccountsSummaryCards = ({ summary }) => {
+export const AccountsSummaryCards = ({ summary, isLoading }) => {
+  if (isLoading) {
+    return <AccountsSummaryCardsSkeleton />
+  }
+
   const cards = [
     {
       id: 'receive',

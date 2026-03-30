@@ -36,7 +36,29 @@ export const statusMetaMap = {
   }
 }
 
-export const getStatusMeta = status => {
+export const getStatusMeta = (status, dueDate) => {
   const normalizedStatus = String(status || '').toLowerCase()
+
+  if (normalizedStatus === 'paid' || normalizedStatus === 'canceled') {
+    return statusMetaMap[normalizedStatus] || statusMetaMap.pending
+  }
+
+  if (dueDate) {
+    const now = new Date()
+    const today = new Date(
+      Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
+    )
+
+    const due = new Date(dueDate)
+    const dueDay = new Date(
+      Date.UTC(due.getUTCFullYear(), due.getUTCMonth(), due.getUTCDate())
+    )
+
+    if (today > dueDay) {
+      return statusMetaMap.overdue
+    }
+  }
+
   return statusMetaMap[normalizedStatus] || statusMetaMap.pending
 }
+

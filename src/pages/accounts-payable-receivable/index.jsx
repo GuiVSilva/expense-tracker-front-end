@@ -46,7 +46,7 @@ export const AccountsPayableReceivable = () => {
         </Button>
       </div>
 
-      <AccountsSummaryCards summary={summary} />
+      <AccountsSummaryCards summary={summary} isLoading={isLoading} />
 
       <AccountsFilters
         filters={filters}

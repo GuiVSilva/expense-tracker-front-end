@@ -9,6 +9,25 @@ import {
   TableRow
 } from '@/components/ui/table'
 
+export const AccountsSummaryCardsSkeleton = ({ items = 4 }) => {
+  return (
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+      {Array.from({ length: items }, (_, index) => (
+        <Card key={index} className="bg-card border-border">
+          <CardContent className="p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-9 w-9 rounded-lg" />
+            </div>
+            <Skeleton className="h-8 w-32" />
+            <Skeleton className="h-3 w-24" />
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
+}
+
 export const AccountsTableSkeleton = ({ rows = 5 }) => {
   return (
     <Card className="bg-card border-border">

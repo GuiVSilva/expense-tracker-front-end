@@ -81,7 +81,7 @@ export const AccountsTable = ({
           <TableBody>
             {accounts.map(account => {
               const typeMeta = getTypeMeta(account.type)
-              const statusMeta = getStatusMeta(account.status)
+              const statusMeta = getStatusMeta(account.status, account.dueDate)
               const openAmount = calculateOpenAmount(account)
               const categoryName = account.category?.name
               const CategoryIcon = getCategoryIcon(categoryName)
