@@ -20,11 +20,7 @@ export const useAccountsPayableReceivable = () => {
 
   const { data: categories } = useQuery(categoriesQueryOptions)
 
-  const {
-    data: accountsData,
-    refech: refechAccounts,
-    isLoading
-  } = useQuery({
+  const { data: accountsData, isLoading } = useQuery({
     queryKey: [
       'financial-accounts',
       currentPage,
@@ -50,12 +46,11 @@ export const useAccountsPayableReceivable = () => {
   const accounts = accountsData?.accounts || []
   const totalItems = accountsData?.total || 0
   const totalPages = totalItems > 0 ? Math.ceil(totalItems / ITEMS_PER_PAGE) : 1
-
-  const summary = {
-    receivable: 0,
-    payable: 0,
-    todayDue: 0,
-    overdue: 0
+  const summary = accountsData?.summary || {
+    receive: 0,
+    payment: 0,
+    winning: 0,
+    late: 0
   }
 
   const setFilter = (key, value) => {
@@ -83,7 +78,6 @@ export const useAccountsPayableReceivable = () => {
     currentPage,
     setCurrentPage,
     isLoading,
-    refechAccounts,
     categories,
     summary
   }

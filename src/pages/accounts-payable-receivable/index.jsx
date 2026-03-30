@@ -18,7 +18,6 @@ export const AccountsPayableReceivable = () => {
     currentPage,
     setCurrentPage,
     isLoading,
-    refechAccounts,
     categories,
     summary
   } = useAccountsPayableReceivable()

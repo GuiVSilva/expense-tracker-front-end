@@ -22,8 +22,7 @@ export const Transactions = () => {
     updateFilter,
     clearFilters,
     categoriesData,
-    isLoading,
-    refetchTransactions
+    isLoading
   } = useTransactions()
 
   const [openDialogTransaction, setOpenDialogTransaction] = useState(false)
@@ -44,7 +43,6 @@ export const Transactions = () => {
 
   const handleCloseDialogDelete = () => {
     setOpenDialogDelete(false)
-    refetchTransactions()
   }
 
   const handleOpenDialogExport = () => setOpenDialogExport(true)

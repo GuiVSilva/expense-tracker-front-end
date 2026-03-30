@@ -5,9 +5,9 @@ import { CalendarClock, CircleAlert, HandCoins, Landmark } from 'lucide-react'
 export const AccountsSummaryCards = ({ summary }) => {
   const cards = [
     {
-      id: 'receivable',
+      id: 'receive',
       label: 'A receber',
-      value: formatCurrency(summary.receivable),
+      value: formatCurrency(summary.receive),
       icon: Landmark,
       iconWrap: 'bg-primary/10',
       iconClass: 'text-primary',
@@ -15,9 +15,9 @@ export const AccountsSummaryCards = ({ summary }) => {
       helper: 'Total em aberto'
     },
     {
-      id: 'payable',
+      id: 'payment',
       label: 'A pagar',
-      value: formatCurrency(summary.payable),
+      value: formatCurrency(summary.payment),
       icon: HandCoins,
       iconWrap: 'bg-destructive/10',
       iconClass: 'text-destructive',
@@ -25,9 +25,9 @@ export const AccountsSummaryCards = ({ summary }) => {
       helper: 'Total em aberto'
     },
     {
-      id: 'today',
+      id: 'winning',
       label: 'Vencendo hoje',
-      value: String(summary.todayDue),
+      value: String(summary.winning),
       icon: CalendarClock,
       iconWrap: 'bg-chart-4/10',
       iconClass: 'text-chart-4',
@@ -35,9 +35,9 @@ export const AccountsSummaryCards = ({ summary }) => {
       helper: 'Titulos para hoje'
     },
     {
-      id: 'overdue',
+      id: 'late',
       label: 'Atrasadas',
-      value: String(summary.overdue),
+      value: String(summary.late),
       icon: CircleAlert,
       iconWrap: 'bg-amber-500/15',
       iconClass: 'text-amber-700 dark:text-amber-300',

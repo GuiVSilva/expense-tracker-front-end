@@ -22,11 +22,7 @@ export const useTransactions = () => {
 
   const { data: categoriesData } = useQuery(categoriesQueryOptions)
 
-  const {
-    data: transactionsData,
-    refetch: refetchTransactions,
-    isLoading
-  } = useQuery({
+  const { data: transactionsData, isLoading } = useQuery({
     queryKey: [
       'transactions',
       currentPage,
@@ -92,7 +88,6 @@ export const useTransactions = () => {
     clearFilters,
     categoriesData,
     transactionsData,
-    isLoading,
-    refetchTransactions
+    isLoading
   }
 }
