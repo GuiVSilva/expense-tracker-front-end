@@ -36,11 +36,11 @@ export const statusMetaMap = {
   }
 }
 
-export const getStatusMeta = (status, dueDate) => {
+export const getResolvedAccountStatus = (status, dueDate) => {
   const normalizedStatus = String(status || '').toLowerCase()
 
   if (normalizedStatus === 'paid' || normalizedStatus === 'canceled') {
-    return statusMetaMap[normalizedStatus] || statusMetaMap.pending
+    return normalizedStatus
   }
 
   if (dueDate) {
@@ -55,10 +55,14 @@ export const getStatusMeta = (status, dueDate) => {
     )
 
     if (today > dueDay) {
-      return statusMetaMap.overdue
+      return 'overdue'
     }
   }
 
-  return statusMetaMap[normalizedStatus] || statusMetaMap.pending
+  return statusMetaMap[normalizedStatus] ? normalizedStatus : 'pending'
 }
 
+export const getStatusMeta = (status, dueDate) => {
+  const resolvedStatus = getResolvedAccountStatus(status, dueDate)
+  return statusMetaMap[resolvedStatus] || statusMetaMap.pending
+}

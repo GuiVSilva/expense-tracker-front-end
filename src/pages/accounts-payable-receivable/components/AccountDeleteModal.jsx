@@ -7,19 +7,19 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { transactionsService } from '@/services/transactions'
+import { financialAccountsService } from '@/services/financialAccounts'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
-export const DeleteTransactionModal = ({ open, onClose, line }) => {
+export const AccountDeleteModal = ({ open, onClose, account }) => {
   const queryClient = useQueryClient()
 
-  const { mutate: deleteTransaction, isPending: isLoading } = useMutation({
-    mutationFn: () => transactionsService.deleteTransaction({ id: line.id }),
+  const { mutate: deleteAccount, isPending: isLoading } = useMutation({
+    mutationFn: () =>
+      financialAccountsService.deleteTransaction({ id: account.id }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] })
-      toast.success('Transação excluida com sucesso!')
+      queryClient.invalidateQueries({ queryKey: ['financial-accounts'] })
+      toast.success('Conta excluida com sucesso!')
       onClose()
     },
     onError: error => {
@@ -33,12 +33,10 @@ export const DeleteTransactionModal = ({ open, onClose, line }) => {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-sm bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-foreground">
-            Confirmar exclusão
-          </DialogTitle>
+          <DialogTitle>Confirmar exclusão</DialogTitle>
           <DialogDescription>
-            Tem certeza que deseja excluir esta transação? Esta ação não pode
-            ser desfeita.
+            Deseja realmente excluir essa conta? Essa ação não pode ser
+            desfeita.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -46,16 +44,14 @@ export const DeleteTransactionModal = ({ open, onClose, line }) => {
             variant="outline"
             onClick={onClose}
             className="bg-transparent"
-            loading={isLoading}
           >
             Cancelar
           </Button>
           <Button
             variant="destructive"
-            onClick={() => deleteTransaction()}
+            onClick={() => deleteAccount()}
             loading={isLoading}
           >
-            <Trash2 className="w-4 h-4 mr-2" />
             Excluir
           </Button>
         </DialogFooter>

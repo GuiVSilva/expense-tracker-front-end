@@ -1,6 +1,5 @@
 import { Plus } from 'lucide-react'
 import { AccountsFilters } from './components/AccountsFilters'
-import { AccountsModals } from './components/AccountsModals'
 import { AccountsSummaryCards } from './components/AccountsSummaryCards'
 import { AccountsTable } from './components/AccountsTable'
 import { useAccountsPayableReceivable } from './hooks/useAccountsPayableReceivable'
@@ -65,6 +64,7 @@ export const AccountsPayableReceivable = () => {
 
       <AccountsTable
         accounts={accounts}
+        categories={categories}
         currentPage={currentPage}
         onPageChange={setCurrentPage}
         totalPages={totalPages}

@@ -8,11 +8,22 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { Eye, HandCoins, Pencil, Search, Trash2 } from 'lucide-react'
+import {
+  Eye,
+  HandCoins,
+  MoreVertical,
+  Pencil,
+  Search,
+  Trash2
+} from 'lucide-react'
 import { getCategoryColor, getCategoryIcon } from '@/lib/category-meta'
 import { calculateOpenAmount } from '../utils/accountsPayableReceivableUtils'
 import { formatCurrency, formatDate } from '@/lib/formatters'
-import { getStatusMeta, getTypeMeta } from '@/lib/account-meta'
+import {
+  getResolvedAccountStatus,
+  getStatusMeta,
+  getTypeMeta
+} from '@/lib/account-meta'
 import { AccountsTableSkeleton } from './AccountsLoading'
 import {
   Pagination,
@@ -23,15 +34,61 @@ import {
   PaginationPrevious
 } from '@/components/ui/pagination'
 import { Card, CardContent } from '@/components/ui/card'
+import { useState } from 'react'
+import { AccountDeleteModal } from './AccountDeleteModal'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { AccountEditModal } from './AccountEditModal'
+import { AccountPayModal } from './AccountPayModal'
+import { AccountViewModal } from './AccountViewModal'
 
 export const AccountsTable = ({
   accounts,
+  categories,
   currentPage,
   onPageChange,
   totalPages,
   isLoading,
   onClearFilters
 }) => {
+  const [line, setLine] = useState({})
+  const [openModalEdit, setOpenModalEdit] = useState(false)
+  const [openModalDelete, setOpenModalDelete] = useState(false)
+  const [openModalPay, setOpenModalPay] = useState(false)
+  const [openModalView, setOpenModalView] = useState(false)
+
+  const handleOpenModalEdit = item => {
+    setLine(item)
+    setOpenModalEdit(true)
+  }
+
+  const handleCloseModalEdit = () => setOpenModalEdit(false)
+
+  const handleOpenModalDelete = item => {
+    setLine(item)
+    setOpenModalDelete(true)
+  }
+
+  const handleCloseModalDelete = () => setOpenModalDelete(false)
+
+  const handleOpenModalPay = item => {
+    setLine(item)
+    setOpenModalPay(true)
+  }
+
+  const handleCloseModalPay = () => setOpenModalPay(false)
+
+  const handleOpenModalView = item => {
+    setLine(item)
+    setOpenModalView(true)
+  }
+
+  const handleCloseModalView = () => setOpenModalView(false)
+
   if (isLoading) {
     return <AccountsTableSkeleton />
   }
@@ -73,17 +130,20 @@ export const AccountsTable = ({
                 Valor
               </TableHead>
               <TableHead className="text-muted-foreground">Status</TableHead>
-              <TableHead className="text-muted-foreground text-right">
-                Ações
-              </TableHead>
+              <TableHead className="text-muted-foreground">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {accounts.map(account => {
               const typeMeta = getTypeMeta(account.type)
+              const resolvedStatus = getResolvedAccountStatus(
+                account.status,
+                account.dueDate
+              )
               const statusMeta = getStatusMeta(account.status, account.dueDate)
               const openAmount = calculateOpenAmount(account)
               const categoryName = account.category?.name
+              const canEditAccount = resolvedStatus === 'pending'
               const CategoryIcon = getCategoryIcon(categoryName)
 
               return (
@@ -129,42 +189,66 @@ export const AccountsTable = ({
                       {statusMeta.label}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <Button
-                        size="icon-sm"
-                        variant="outline"
-                        className="bg-transparent"
-                        // onClick={() => onEdit(account)}
+
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        asChild
+                        onClick={e => e.stopPropagation()}
                       >
-                        <Pencil className="w-3.5 h-3.5" />
-                      </Button>
-                      <Button
-                        size="icon-sm"
-                        variant="outline"
-                        className="bg-transparent"
-                        // onClick={() => onPay(account)}
-                        disabled={account.status === 'paid'}
-                      >
-                        <HandCoins className="w-3.5 h-3.5" />
-                      </Button>
-                      <Button
-                        size="icon-sm"
-                        variant="outline"
-                        className="bg-transparent"
-                        // onClick={() => onViewDetails(account)}
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                      </Button>
-                      <Button
-                        size="icon-sm"
-                        variant="outline"
-                        className="bg-transparent text-destructive border-destructive/30 hover:bg-destructive/10"
-                        // onClick={() => onDelete(account)}
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
-                    </div>
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          className="h-8 w-8"
+                        >
+                          <MoreVertical className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          variant="warning"
+                          disabled={!canEditAccount}
+                          onClick={e => {
+                            e.stopPropagation()
+                            if (!canEditAccount) return
+                            handleOpenModalEdit(account)
+                          }}
+                        >
+                          <Pencil className="w-4 h-4 mr-2" />
+                          Editar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          variant="primary"
+                          onClick={e => {
+                            e.stopPropagation()
+                            handleOpenModalPay(account)
+                          }}
+                        >
+                          <HandCoins className="w-3.5 h-3.5 mr-2" />
+                          Pagar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          variant="info"
+                          onClick={e => {
+                            e.stopPropagation()
+                            handleOpenModalView(account)
+                          }}
+                        >
+                          <Eye className="w-3.5 h-3.5 mr-2" />
+                          Visualizar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onClick={e => {
+                            e.stopPropagation()
+                            handleOpenModalDelete(account)
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Excluir
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               )
@@ -213,6 +297,31 @@ export const AccountsTable = ({
           </PaginationItem>
         </PaginationContent>
       </Pagination>
+
+      <AccountDeleteModal
+        open={openModalDelete}
+        onClose={handleCloseModalDelete}
+        account={line}
+      />
+
+      <AccountEditModal
+        open={openModalEdit}
+        onClose={handleCloseModalEdit}
+        account={line}
+        categories={categories}
+      />
+
+      <AccountPayModal
+        open={openModalPay}
+        onClose={handleCloseModalPay}
+        account={line}
+      />
+
+      <AccountViewModal
+        open={openModalView}
+        onClose={handleCloseModalView}
+        account={line}
+      />
     </>
   )
 }

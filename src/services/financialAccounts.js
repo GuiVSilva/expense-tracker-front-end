@@ -38,6 +38,30 @@ export class FinancialAccountsService {
     })
     return response.data
   }
+
+  async registerPayment({ id, amount, method, date }) {
+    const response = await api.post('/financial-accounts/pay', {
+      id,
+      amount,
+      method,
+      date
+    })
+
+    return response.data
+  }
+
+  async updateAccount({ id, description, category, amount, dueDate, status }) {
+    const response = await api.put('/financial-accounts/', {
+      id,
+      description,
+      category,
+      amount,
+      dueDate,
+      status
+    })
+
+    return response.data
+  }
 }
 
 export const financialAccountsService = new FinancialAccountsService()
