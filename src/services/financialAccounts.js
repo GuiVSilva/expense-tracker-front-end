@@ -50,14 +50,13 @@ export class FinancialAccountsService {
     return response.data
   }
 
-  async updateAccount({ id, description, category, amount, dueDate, status }) {
+  async updateAccount({ id, description, category, amount, dueDate }) {
     const response = await api.put('/financial-accounts/', {
       id,
       description,
       category,
       amount,
-      dueDate,
-      status
+      dueDate
     })
 
     return response.data

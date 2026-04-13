@@ -20,7 +20,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { statusOptions } from '@/lib/account-meta'
 import { financialAccountsService } from '@/services/financialAccounts'
 import { toast } from 'sonner'
 import { getInitialAccountEditForm } from '../constansts/accountEditForm'
@@ -48,7 +47,14 @@ export const AccountEditModal = ({ open, onClose, account, categories }) => {
   }, [open, account, reset])
 
   const { mutate: updateAccount, isPending: isLoading } = useMutation({
-    mutationFn: data => financialAccountsService.updateAccount(data),
+    mutationFn: data =>
+      financialAccountsService.updateAccount({
+        id: account.id,
+        description: data.description,
+        category: data.category,
+        amount: data.amount,
+        dueDate: data.dueDate
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['financial-accounts'] })
       toast.success('Conta atualizada com sucesso!')
@@ -60,35 +66,10 @@ export const AccountEditModal = ({ open, onClose, account, categories }) => {
     }
   })
 
-  const handleClose = () => {
-    reset(getInitialAccountEditForm())
-    onClose()
-  }
-
-  const handleUpdateAccount = data => {
-    if (!account) return
-
-    updateAccount({
-      id: account.id,
-      description: data.description,
-      category: data.category,
-      amount: data.amount,
-      dueDate: data.dueDate,
-      status: data.status
-    })
-  }
-
   return (
-    <Dialog
-      open={open}
-      onOpenChange={nextOpen => {
-        if (!nextOpen) {
-          handleClose()
-        }
-      }}
-    >
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg bg-card border-border">
-        <form onSubmit={handleSubmit(handleUpdateAccount)}>
+        <form onSubmit={handleSubmit(updateAccount)}>
           <DialogHeader>
             <DialogTitle>Editar conta</DialogTitle>
             <DialogDescription>
@@ -113,7 +94,7 @@ export const AccountEditModal = ({ open, onClose, account, categories }) => {
               ) : null}
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
                 <Label>Categoria</Label>
                 <Controller
@@ -144,7 +125,7 @@ export const AccountEditModal = ({ open, onClose, account, categories }) => {
                 ) : null}
               </div>
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label>Status</Label>
                 <Controller
                   control={control}
@@ -171,7 +152,7 @@ export const AccountEditModal = ({ open, onClose, account, categories }) => {
                     {errors.status.message}
                   </p>
                 ) : null}
-              </div>
+              </div> */}
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -208,20 +189,13 @@ export const AccountEditModal = ({ open, onClose, account, categories }) => {
                 ) : null}
               </div>
             </div>
-
-            <div className="rounded-md border border-amber-500/20 bg-amber-500/8 p-3">
-              <p className="text-xs text-amber-700 dark:text-amber-300">
-                A edicao fica disponivel apenas para contas pendentes, para
-                evitar inconsistencias em contas com pagamento registrado.
-              </p>
-            </div>
           </div>
 
           <DialogFooter>
             <Button
               type="button"
               variant="outline"
-              onClick={handleClose}
+              onClick={onClose}
               className="bg-transparent"
             >
               Cancelar

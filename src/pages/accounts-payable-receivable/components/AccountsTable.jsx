@@ -207,42 +207,29 @@ export const AccountsTable = ({
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem
                           variant="warning"
-                          disabled={!canEditAccount}
-                          onClick={e => {
-                            e.stopPropagation()
-                            if (!canEditAccount) return
-                            handleOpenModalEdit(account)
-                          }}
+                          // disabled={!canEditAccount}
+                          onClick={() => handleOpenModalEdit(account)}
                         >
                           <Pencil className="w-4 h-4 mr-2" />
                           Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           variant="primary"
-                          onClick={e => {
-                            e.stopPropagation()
-                            handleOpenModalPay(account)
-                          }}
+                          onClick={() => handleOpenModalPay(account)}
                         >
                           <HandCoins className="w-3.5 h-3.5 mr-2" />
                           Pagar
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           variant="info"
-                          onClick={e => {
-                            e.stopPropagation()
-                            handleOpenModalView(account)
-                          }}
+                          onClick={() => handleOpenModalView(account)}
                         >
                           <Eye className="w-3.5 h-3.5 mr-2" />
                           Visualizar
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           variant="destructive"
-                          onClick={e => {
-                            e.stopPropagation()
-                            handleOpenModalDelete(account)
-                          }}
+                          onClick={() => handleOpenModalDelete(account)}
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
                           Excluir
