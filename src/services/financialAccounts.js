@@ -61,6 +61,13 @@ export class FinancialAccountsService {
 
     return response.data
   }
+
+  async deleteAccount({ id }) {
+    const response = await api.delete(`/financial-accounts/delete`, {
+      params: { id }
+    })
+    return response.data
+  }
 }
 
 export const financialAccountsService = new FinancialAccountsService()

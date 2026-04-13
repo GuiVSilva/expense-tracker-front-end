@@ -8,6 +8,7 @@ export const paymentMethodOptions = [
 ]
 
 export const formatPaymentMethod = value => {
-  const method = paymentMethodOptions.find(item => item.value === value)
+  const normalizedValue = String(value || '').toLowerCase()
+  const method = paymentMethodOptions.find(item => item.value === normalizedValue)
   return method?.label || value
 }

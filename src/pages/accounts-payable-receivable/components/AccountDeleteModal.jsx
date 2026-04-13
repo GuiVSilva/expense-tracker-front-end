@@ -16,7 +16,7 @@ export const AccountDeleteModal = ({ open, onClose, account }) => {
 
   const { mutate: deleteAccount, isPending: isLoading } = useMutation({
     mutationFn: () =>
-      financialAccountsService.deleteTransaction({ id: account.id }),
+      financialAccountsService.deleteAccount({ id: account.id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['financial-accounts'] })
       toast.success('Conta excluida com sucesso!')
