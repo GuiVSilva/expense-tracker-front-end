@@ -19,11 +19,7 @@ import {
 import { getCategoryColor, getCategoryIcon } from '@/lib/category-meta'
 import { calculateOpenAmount } from '../utils/accountsPayableReceivableUtils'
 import { formatCurrency, formatDate } from '@/lib/formatters'
-import {
-  getResolvedAccountStatus,
-  getStatusMeta,
-  getTypeMeta
-} from '@/lib/account-meta'
+import { getStatusMeta, getTypeMeta } from '@/lib/account-meta'
 import { AccountsTableSkeleton } from './AccountsLoading'
 import {
   Pagination,
@@ -45,6 +41,8 @@ import {
 import { AccountEditModal } from './AccountEditModal'
 import { AccountPayModal } from './AccountPayModal'
 import { AccountViewModal } from './AccountViewModal'
+
+const editableStatuses = new Set(['pending', 'overdue'])
 
 export const AccountsTable = ({
   accounts,
@@ -135,15 +133,19 @@ export const AccountsTable = ({
           </TableHeader>
           <TableBody>
             {accounts.map(account => {
+              const rawStatus = String(account.status || '').toLowerCase()
               const typeMeta = getTypeMeta(account.type)
-              const resolvedStatus = getResolvedAccountStatus(
-                account.status,
-                account.dueDate
-              )
+
               const statusMeta = getStatusMeta(account.status, account.dueDate)
               const openAmount = calculateOpenAmount(account)
               const categoryName = account.category?.name
-              const canEditAccount = resolvedStatus === 'pending'
+              const paymentsCount =
+                account.financialAccountPayments?.length ?? 0
+              const permissions = {
+                canEdit: editableStatuses.has(rawStatus),
+                canPay: !['paid', 'canceled'].includes(rawStatus),
+                canDelete: paymentsCount === 0
+              }
               const CategoryIcon = getCategoryIcon(categoryName)
 
               return (
@@ -207,7 +209,7 @@ export const AccountsTable = ({
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem
                           variant="warning"
-                          // disabled={!canEditAccount}
+                          disabled={!permissions.canEdit}
                           onClick={() => handleOpenModalEdit(account)}
                         >
                           <Pencil className="w-4 h-4 mr-2" />
@@ -216,6 +218,7 @@ export const AccountsTable = ({
                         <DropdownMenuItem
                           variant="primary"
                           onClick={() => handleOpenModalPay(account)}
+                          disabled={!permissions.canPay}
                         >
                           <HandCoins className="w-3.5 h-3.5 mr-2" />
                           Pagar
@@ -229,6 +232,7 @@ export const AccountsTable = ({
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           variant="destructive"
+                          disabled={!permissions.canDelete}
                           onClick={() => handleOpenModalDelete(account)}
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
