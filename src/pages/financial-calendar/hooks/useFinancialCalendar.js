@@ -1,22 +1,38 @@
 import { useMemo, useState } from 'react'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import {
   buildMonthGrid,
-  getFinancialEvents,
   getMonthLabel,
-  isSameDay
+  isSameDay,
+  transformBackendDataToEvent
 } from '../utils/financialCalendarUtils'
+import { financialAccountsService } from '@/services/financialAccounts'
+
+const CALENDAR_STALE_TIME = 1000 * 60 * 5 
+const CALENDAR_GC_TIME = 1000 * 60 * 30 
 
 export const useFinancialCalendar = () => {
   const today = new Date()
-  const todayStartTimestamp = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate()
-  ).getTime()
+
   const [currentYear, setCurrentYear] = useState(today.getFullYear())
   const [currentMonth, setCurrentMonth] = useState(today.getMonth())
 
-  const events = useMemo(() => getFinancialEvents(), [])
+  const { data: accountsData } = useQuery({
+    queryKey: ['financial-accounts-by-month', currentYear, currentMonth],
+    queryFn: () =>
+      financialAccountsService.getAccountsByMonth({
+        year: currentYear,
+        month: currentMonth + 1
+      }),
+    staleTime: CALENDAR_STALE_TIME,
+    gcTime: CALENDAR_GC_TIME,
+    placeholderData: keepPreviousData
+  })
+
+  const events = useMemo(() => {
+    if (!accountsData) return []
+    return accountsData.map(transformBackendDataToEvent)
+  }, [accountsData])
 
   const monthLabel = useMemo(
     () => getMonthLabel(currentYear, currentMonth),
@@ -51,33 +67,6 @@ export const useFinancialCalendar = () => {
     }, {})
   }, [monthEvents])
 
-  const upcomingEvents = useMemo(() => {
-    return [...events]
-      .filter(event => new Date(event.date).getTime() >= todayStartTimestamp)
-      .sort((a, b) => new Date(a.date) - new Date(b.date))
-      .slice(0, 8)
-  }, [events, todayStartTimestamp])
-
-  const summary = useMemo(() => {
-    const totals = monthEvents.reduce(
-      (acc, event) => {
-        if (event.type === 'income') acc.income += event.amount
-        if (event.type === 'expense' || event.type === 'bill') acc.outflow += event.amount
-        if (event.type === 'bill') acc.bills += 1
-        if (event.type === 'goal') acc.goals += 1
-        return acc
-      },
-      { income: 0, outflow: 0, bills: 0, goals: 0 }
-    )
-
-    return [
-      { id: 'income', label: 'Entradas previstas', value: totals.income, tone: 'text-emerald-600' },
-      { id: 'outflow', label: 'Saidas previstas', value: totals.outflow, tone: 'text-rose-600' },
-      { id: 'bills', label: 'Vencimentos', value: totals.bills, tone: 'text-amber-600' },
-      { id: 'goals', label: 'Movimentos de metas', value: totals.goals, tone: 'text-blue-600' }
-    ]
-  }, [monthEvents])
-
   const goPrevMonth = () => {
     if (currentMonth === 0) {
       setCurrentMonth(11)
@@ -104,10 +93,9 @@ export const useFinancialCalendar = () => {
     monthLabel,
     calendarDays,
     eventsByDate,
-    upcomingEvents,
-    summary,
     goPrevMonth,
     goNextMonth,
-    isToday
+    isToday,
+    accountsData
   }
 }

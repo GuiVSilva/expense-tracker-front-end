@@ -12,110 +12,10 @@ const eventTypeMap = {
   bill: {
     label: 'Vencimento',
     colorClass: 'bg-amber-500/15 text-amber-700 dark:text-amber-300'
-  },
-  goal: {
-    label: 'Meta',
-    colorClass: 'bg-blue-500/15 text-blue-700 dark:text-blue-300'
   }
 }
-
-const today = new Date()
-const currentYear = today.getFullYear()
-const currentMonth = today.getMonth()
 
 const toDateKey = date => date.toISOString().split('T')[0]
-
-const createDate = (dayOffset, monthOffset = 0) => {
-  const date = new Date(currentYear, currentMonth + monthOffset, today.getDate() + dayOffset)
-  return toDateKey(date)
-}
-
-const mockEvents = [
-  {
-    id: 'ev-1',
-    title: 'Salario',
-    type: 'income',
-    amount: 7200,
-    date: createDate(-3)
-  },
-  {
-    id: 'ev-2',
-    title: 'Aluguel',
-    type: 'bill',
-    amount: 1850,
-    date: createDate(2)
-  },
-  {
-    id: 'ev-3',
-    title: 'Meta: Viagem',
-    type: 'goal',
-    amount: 400,
-    date: createDate(4)
-  },
-  {
-    id: 'ev-4',
-    title: 'Cartao Nubank',
-    type: 'bill',
-    amount: 980,
-    date: createDate(6)
-  },
-  {
-    id: 'ev-5',
-    title: 'Freela UX',
-    type: 'income',
-    amount: 1300,
-    date: createDate(8)
-  },
-  {
-    id: 'ev-6',
-    title: 'Seguro do carro',
-    type: 'expense',
-    amount: 320,
-    date: createDate(11)
-  },
-  {
-    id: 'ev-7',
-    title: 'Internet',
-    type: 'bill',
-    amount: 129,
-    date: createDate(14)
-  },
-  {
-    id: 'ev-8',
-    title: 'Meta: Reserva',
-    type: 'goal',
-    amount: 500,
-    date: createDate(17)
-  },
-  {
-    id: 'ev-9',
-    title: 'Condominio',
-    type: 'bill',
-    amount: 430,
-    date: createDate(22)
-  },
-  {
-    id: 'ev-10',
-    title: 'Assinaturas',
-    type: 'expense',
-    amount: 144,
-    date: createDate(28)
-  },
-  {
-    id: 'ev-11',
-    title: 'Bonus trimestral',
-    type: 'income',
-    amount: 2000,
-    date: createDate(34, 1)
-  },
-  {
-    id: 'ev-12',
-    title: 'IPTU',
-    type: 'bill',
-    amount: 560,
-    date: createDate(40, 1)
-  }
-]
 
 export const formatCurrency = value =>
   new Intl.NumberFormat('pt-BR', {
@@ -137,9 +37,23 @@ export const getMonthLabel = (year, month) =>
     year: 'numeric'
   })
 
-export const getFinancialEvents = () => mockEvents
+export const transformBackendDataToEvent = item => {
+  const typeMap = {
+    PAYABLE: item.status === 'PAID' ? 'expense' : 'bill',
+    RECEIVABLE: 'income'
+  }
 
-export const getEventTypeMeta = type => eventTypeMap[type] || eventTypeMap.expense
+  return {
+    id: item.id,
+    title: item.description,
+    type: typeMap[item.type] || 'expense',
+    amount: parseFloat(item.amount),
+    date: toDateKey(new Date(item.dueDate))
+  }
+}
+
+export const getEventTypeMeta = type =>
+  eventTypeMap[type] || eventTypeMap.expense
 
 export const getWeekDays = () => weekDays
 

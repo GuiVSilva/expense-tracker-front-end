@@ -1,13 +1,20 @@
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react'
 
-export const FinancialCalendarHeader = ({ monthLabel, onPrevMonth, onNextMonth }) => {
+export const FinancialCalendarHeader = ({
+  monthLabel,
+  onPrevMonth,
+  onNextMonth
+}) => {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Calendario Financeiro</h1>
+        <h1 className="text-2xl font-bold text-foreground">
+          Calendario Financeiro
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Visualize vencimentos, entradas e movimentos de metas em um unico calendario.
+          Visualize todas as suas contas a pagar e a receber em um calendário
+          mensal, facilitando o acompanhamento de suas finanças.
         </p>
       </div>
 

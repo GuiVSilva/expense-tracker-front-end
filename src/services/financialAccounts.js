@@ -68,6 +68,16 @@ export class FinancialAccountsService {
     })
     return response.data
   }
+
+  async getAccountsByMonth({ year, month }) {
+    const response = await api.get('/financial-accounts/by-month', {
+      params: {
+        year,
+        month
+      }
+    })
+    return response.data
+  }
 }
 
 export const financialAccountsService = new FinancialAccountsService()

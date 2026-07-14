@@ -1,7 +1,6 @@
-import { CalendarSummaryCards } from './components/CalendarSummaryCards'
 import { FinancialCalendarGrid } from './components/FinancialCalendarGrid'
 import { FinancialCalendarHeader } from './components/FinancialCalendarHeader'
-import { UpcomingEventsPanel } from './components/UpcomingEventsPanel'
+import { FinancialEventsDetailsPanel } from './components/FinancialEventsDetailsPanel'
 import { useFinancialCalendar } from './hooks/useFinancialCalendar'
 
 export const FinancialCalendar = () => {
@@ -9,13 +8,11 @@ export const FinancialCalendar = () => {
     monthLabel,
     calendarDays,
     eventsByDate,
-    upcomingEvents,
-    summary,
     goPrevMonth,
     goNextMonth,
-    isToday
+    isToday,
+    accountsData
   } = useFinancialCalendar()
-
   return (
     <div className="space-y-8">
       <FinancialCalendarHeader
@@ -23,8 +20,6 @@ export const FinancialCalendar = () => {
         onPrevMonth={goPrevMonth}
         onNextMonth={goNextMonth}
       />
-
-      <CalendarSummaryCards summary={summary} />
 
       <div className="grid grid-cols-1 gap-6 2xl:grid-cols-3">
         <div className="2xl:col-span-2">
@@ -34,7 +29,7 @@ export const FinancialCalendar = () => {
             isToday={isToday}
           />
         </div>
-        <UpcomingEventsPanel events={upcomingEvents} />
+        <FinancialEventsDetailsPanel events={accountsData} />
       </div>
     </div>
   )
